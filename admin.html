@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>行程后台管理</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">⚙</div>
+      <div>
+        <strong>行程后台管理</strong>
+        <span>Admin Dashboard</span>
+      </div>
+    </div>
+
+    <button id="logoutBtn" class="btn light hidden">退出登录</button>
+  </header>
+
+  <main class="container">
+    <section id="loginPanel" class="card login-card">
+      <h1>后台登录</h1>
+      <p>请输入管理员邮箱和密码。</p>
+
+      <form id="loginForm" class="form single">
+        <label>
+          邮箱
+          <input id="email" type="email" required placeholder="admin@example.com" />
+        </label>
+
+        <label>
+          密码
+          <input id="password" type="password" required placeholder="请输入密码" />
+        </label>
+
+        <button class="btn full" type="submit">登录后台</button>
+      </form>
+    </section>
+
+    <section id="adminPanel" class="hidden">
+      <section class="hero">
+        <h1>后台管理</h1>
+        <p>你可以新增行程、关闭行程、查看报名信息和导出 CSV。</p>
+        <div class="stats">
+          <div>
+            <strong id="adminTripCount">0</strong>
+            <span>行程数量</span>
+          </div>
+          <div>
+            <strong id="adminRegCount">0</strong>
+            <span>报名记录</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="tabs">
+        <button class="active" data-tab="trips">行程管理</button>
+        <button data-tab="registrations">报名信息</button>
+      </div>
+
+      <section id="tripsTab">
+        <div class="admin-layout">
+          <div class="card">
+            <h2>新增行程</h2>
+            <form id="tripForm" class="form">
+              <label class="full">
+                行程标题
+                <input id="title" required placeholder="例如：杭州两日灵感之旅" />
+              </label>
+
+              <label>
+                目的地
+                <input id="destination" placeholder="例如：杭州" />
+              </label>
+
+              <label>
+                类型
+                <input id="tripType" placeholder="例如：城市旅行" />
+              </label>
+
+              <label>
+                开始日期
+                <input id="startDate" type="date" />
+              </label>
+
+              <label>
+                结束日期
+                <input id="endDate" type="date" />
+              </label>
+
+              <label>
+                集合时间
+                <input id="meetTime" placeholder="例如：09:00" />
+              </label>
+
+              <label>
+                人数上限
+                <input id="personLimit" type="number" min="1" placeholder="例如：20" />
+              </label>
+
+              <label class="full">
+                集合地点
+                <input id="meetPlace" placeholder="例如：杭州东站到达层集合" />
+              </label>
+
+              <label class="full">
+                行程说明
+                <textarea id="description" placeholder="请输入行程说明"></textarea>
+              </label>
+
+              <button class="btn full" type="submit">保存行程</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <h2>行程列表</h2>
+              <button class="btn light" id="reloadTripsBtn">刷新</button>
+            </div>
+            <div id="adminTripList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="registrationsTab" class="hidden">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>报名信息</h2>
+              <p>查看所有用户提交的报名记录。</p>
+            </div>
+            <button class="btn light" id="exportBtn">导出 CSV</button>
+          </div>
+
+          <label class="filter">
+            按行程筛选
+            <select id="tripFilter"></select>
+          </label>
+
+          <div id="registrationList"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/common.js"></script>
+  <script src="./js/admin.js"></script>
+</body>
+</html>
