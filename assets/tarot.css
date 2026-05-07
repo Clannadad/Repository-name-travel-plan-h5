@@ -577,3 +577,583 @@ body {
     gap: 16px;
   }
 }
+/* ===== Tarot UI Upgrade ===== */
+
+.tarot-page {
+  position: relative;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(250, 204, 21, 0.14), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.24), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(139, 92, 246, 0.25), transparent 34%),
+    linear-gradient(135deg, #08030f 0%, #150820 42%, #2a0b2d 100%);
+}
+
+.tarot-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px),
+    radial-gradient(circle, rgba(250,204,21,0.45) 1px, transparent 1px);
+  background-size: 42px 42px, 88px 88px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+.tarot-topbar {
+  width: min(1280px, calc(100% - 40px));
+  padding: 22px 0 12px;
+}
+
+.tarot-back {
+  font-size: 15px;
+  padding: 8px 0;
+}
+
+.tarot-brand {
+  padding: 8px 14px 8px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+}
+
+.tarot-brand-icon {
+  background: linear-gradient(135deg, rgba(250,204,21,0.25), rgba(139,92,246,0.25));
+}
+
+.tarot-shell {
+  width: min(1280px, calc(100% - 40px));
+  min-height: auto;
+  padding: 24px 0 64px;
+}
+
+.tarot-hero,
+.tarot-card-panel {
+  width: min(980px, 100%);
+  padding: clamp(30px, 4vw, 58px);
+  border-radius: 34px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.055)),
+    radial-gradient(circle at 15% 15%, rgba(250,204,21,0.12), transparent 26%),
+    radial-gradient(circle at 85% 10%, rgba(236,72,153,0.14), transparent 30%);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 36px 100px rgba(0,0,0,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.tarot-hero {
+  min-height: min(620px, calc(100vh - 150px));
+}
+
+.tarot-card-panel h2 {
+  letter-spacing: -0.04em;
+}
+
+.tarot-muted,
+.tarot-desc,
+.tarot-tip {
+  color: rgba(248,243,255,0.74);
+}
+
+.tarot-btn {
+  min-height: 50px;
+  padding: 0 28px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tarot-btn.primary {
+  color: #24120a;
+  background:
+    linear-gradient(135deg, #facc15 0%, #fde68a 48%, #fff7cc 100%);
+  box-shadow:
+    0 16px 36px rgba(250,204,21,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.55);
+}
+
+.tarot-btn.primary:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 22px 48px rgba(250,204,21,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.tarot-btn.ghost {
+  color: rgba(248,243,255,0.92);
+  background: rgba(255,255,255,0.095);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.tarot-btn.ghost:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.tarot-choice {
+  min-height: 40px;
+  padding: 0 18px;
+}
+
+.tarot-choice.active {
+  background: linear-gradient(135deg, #facc15, #fde68a);
+  box-shadow: 0 10px 24px rgba(250,204,21,0.18);
+}
+
+#questionInput {
+  min-height: 132px;
+  background: rgba(255,255,255,0.085);
+  border-color: rgba(255,255,255,0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.tarot-action-row {
+  gap: 14px;
+}
+
+/* 桌面端问题页更像卡片布局 */
+@media (min-width: 980px) {
+  #stepQuestion .tarot-card-panel {
+    width: min(1040px, 100%);
+  }
+
+  #stepQuestion .tarot-form {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 28px;
+  }
+
+  #stepQuestion .tarot-form label[for="questionInput"],
+  #stepQuestion #questionInput,
+  #stepQuestion .tarot-action-row,
+  #stepQuestion .tarot-confirm-text {
+    grid-column: 1 / -1;
+  }
+}
+
+/* 洗牌更有仪式感 */
+.shuffle-stage {
+  height: 230px;
+}
+
+.shuffle-card,
+.cut-deck,
+.fan-card,
+.spread-card-back {
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,0.3), transparent 22%),
+    linear-gradient(135deg, rgba(250,204,21,0.92), rgba(139,92,246,0.95)),
+    repeating-linear-gradient(45deg, transparent 0 9px, rgba(255,255,255,0.18) 9px 11px);
+  border: 2px solid rgba(255,255,255,0.68);
+}
+
+/* 抽牌扇形 */
+.fan-stage {
+  height: 270px;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fan-card {
+  width: 86px;
+  height: 136px;
+}
+
+.tarot-drawn-list span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(250,204,21,0.1);
+  border: 1px solid rgba(250,204,21,0.24);
+}
+
+/* 翻牌区 */
+.reveal-stage {
+  align-items: flex-start;
+  gap: 26px;
+  min-height: auto;
+}
+
+.reveal-slot {
+  width: min(340px, 100%);
+}
+
+.reveal-card {
+  width: 142px;
+  height: 224px;
+  margin: 0 auto;
+}
+
+.reveal-card-inner {
+  border-radius: 18px;
+}
+
+.reveal-card-front {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(250,204,21,0.2), transparent 30%),
+    linear-gradient(160deg, #fff7ed, #f3e8ff 70%, #eadcff);
+  color: #251051;
+  border: 2px solid rgba(250,204,21,0.85);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,0.28),
+    inset 0 0 0 5px rgba(255,255,255,0.58);
+}
+
+/* 关键：逆位不再把文字倒过来 */
+.reveal-card-front.reversed {
+  transform: rotateY(180deg);
+  border-color: rgba(236,72,153,0.9);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(236,72,153,0.18), transparent 30%),
+    linear-gradient(160deg, #fff1f8, #f3e8ff 70%, #e9d5ff);
+}
+
+.card-symbol {
+  font-size: 46px;
+  line-height: 1;
+}
+
+.card-name {
+  font-size: 22px;
+  margin-top: 8px;
+}
+
+.card-orientation {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(126,34,206,0.1);
+}
+
+.reveal-card-front.reversed .card-orientation {
+  color: #be185d;
+  background: rgba(236,72,153,0.13);
+}
+
+.reveal-reading {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.105);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(248,243,255,0.76);
+  font-size: 14.5px;
+}
+
+.reveal-reading strong {
+  display: block;
+  color: #fef3c7;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+/* 总结页 */
+#stepSummary .tarot-card-panel {
+  width: min(1180px, 100%);
+}
+
+.summary-box {
+  gap: 18px;
+}
+
+.summary-hero {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
+}
+
+.summary-section {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+.summary-section h3 {
+  color: #facc15;
+  font-size: 18px;
+}
+
+.summary-section p {
+  color: rgba(248,243,255,0.76);
+}
+
+.summary-card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.summary-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(250,204,21,0.08);
+}
+
+.summary-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.summary-mini-card {
+  width: 58px;
+  height: 86px;
+  border-radius: 12px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  background: linear-gradient(160deg, #fff7ed, #f3e8ff);
+  color: #2e1065;
+  border: 2px solid rgba(250,204,21,0.8);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+}
+
+.summary-mini-card.reversed {
+  border-color: rgba(236,72,153,0.85);
+}
+
+.summary-card-title {
+  margin: 0;
+  color: #fff7cc;
+  font-size: 17px;
+}
+
+.summary-card-subtitle {
+  margin-top: 5px;
+  color: rgba(248,243,255,0.6);
+  font-size: 13px;
+}
+
+.orientation-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #2e1065;
+  background: #facc15;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.orientation-badge.reversed {
+  color: #fff;
+  background: linear-gradient(135deg, #be185d, #7e22ce);
+}
+
+.reading-block {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.reading-block p {
+  margin: 0;
+}
+
+.reading-label {
+  color: #fde68a;
+  font-weight: 900;
+}
+
+.summary-actions {
+  margin-top: 22px;
+  justify-content: center;
+}
+
+/* 分享图生成提示 */
+.tarot-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: #21120a;
+  background: linear-gradient(135deg, #facc15, #fff7cc);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.32);
+  font-weight: 900;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s ease;
+}
+
+.tarot-toast.show {
+  opacity: 1;
+  bottom: 40px;
+}
+
+/* 移动端优化 */
+@media (max-width: 720px) {
+  .tarot-topbar {
+    width: min(100% - 28px, 520px);
+    padding: 14px 0 8px;
+  }
+
+  .tarot-brand {
+    font-size: 13px;
+    padding-right: 10px;
+  }
+
+  .tarot-brand-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .tarot-shell {
+    width: min(100% - 24px, 520px);
+    padding: 14px 0 34px;
+  }
+
+  .tarot-hero,
+  .tarot-card-panel {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 26px 18px;
+    border-radius: 26px;
+  }
+
+  .tarot-hero {
+    min-height: calc(100vh - 120px);
+  }
+
+  .tarot-moon {
+    width: 102px;
+    height: 102px;
+    margin-bottom: 22px;
+  }
+
+  .tarot-moon::after {
+    width: 82px;
+    height: 82px;
+  }
+
+  .tarot-hero h1 {
+    font-size: 40px;
+  }
+
+  .tarot-card-panel h2 {
+    font-size: 28px;
+  }
+
+  .tarot-desc {
+    font-size: 14px;
+  }
+
+  .tarot-btn {
+    width: 100%;
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  .tarot-action-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .tarot-choice-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .tarot-choice {
+    width: 100%;
+    min-height: 42px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  #questionInput {
+    min-height: 104px;
+    font-size: 14px;
+  }
+
+  .shuffle-stage {
+    height: 190px;
+    transform: scale(0.86);
+    transform-origin: center;
+  }
+
+  .cut-stage {
+    width: 260px;
+    height: 158px;
+    transform: scale(0.88);
+    transform-origin: center;
+  }
+
+  .fan-stage {
+    height: 228px;
+    transform: scale(0.76);
+    transform-origin: top center;
+    margin-bottom: -28px;
+  }
+
+  .spread-stage,
+  .reveal-stage {
+    gap: 18px;
+    margin: 22px auto;
+  }
+
+  .reveal-slot {
+    width: 100%;
+  }
+
+  .reveal-card {
+    width: 122px;
+    height: 192px;
+  }
+
+  .card-symbol {
+    font-size: 38px;
+  }
+
+  .card-name {
+    font-size: 19px;
+  }
+
+  .reveal-reading {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  .summary-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card-list {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-section {
+    padding: 16px;
+  }
+
+  .summary-mini-card {
+    width: 50px;
+    height: 74px;
+    font-size: 23px;
+  }
+}

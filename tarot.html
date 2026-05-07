@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="./assets/tarot.css" />
 </head>
+
 <body>
   <main class="tarot-page">
     <header class="tarot-topbar">
@@ -151,16 +153,16 @@
           <h2>你的塔罗占卜总结</h2>
 
           <div class="summary-box" id="summaryBox"></div>
-
-          <div class="tarot-action-row">
-            <button class="tarot-btn ghost" id="restartBtn">再次占卜</button>
-            <button class="tarot-btn primary" id="shareBtn">分享好友</button>
+          <div class="tarot-action-row summary-actions">
+            <button class="tarot-btn ghost" id="restartBtn" type="button">重新占卜</button>
+            <button class="tarot-btn ghost" id="copyShareBtn" type="button">复制结果</button>
+            <button class="tarot-btn primary" id="createShareImageBtn" type="button">生成分享图</button>
           </div>
-        </div>
       </section>
     </section>
   </main>
 
   <script src="./js/tarot.js"></script>
 </body>
+
 </html>

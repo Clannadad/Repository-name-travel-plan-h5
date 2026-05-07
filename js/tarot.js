@@ -349,9 +349,33 @@ const stepIds = [
   "stepSummary"
 ];
 
+const keywordMap = {
+  upright: ["推进", "清晰", "机会", "成长", "稳定", "显化"],
+  reversed: ["调整", "阻碍", "延迟", "失衡", "提醒", "修正"]
+};
+
+const categoryAdviceLabel = {
+  love: {
+    focus: "关系互动",
+    action: "真诚表达、稳定沟通、观察行动",
+    caution: "避免只靠猜测判断关系，也不要因情绪波动做决定。"
+  },
+  career: {
+    focus: "目标推进",
+    action: "确认优先级、拆解任务、主动争取资源",
+    caution: "避免被临时压力带偏，也要注意沟通和流程细节。"
+  },
+  study: {
+    focus: "学习节奏",
+    action: "复盘薄弱点、建立计划、持续练习",
+    caution: "避免只靠短期冲刺，稳定执行比焦虑更重要。"
+  }
+};
+
 function showStep(id) {
   stepIds.forEach(stepId => {
-    document.getElementById(stepId).classList.toggle("active", stepId === id);
+    const el = document.getElementById(stepId);
+    if (el) el.classList.toggle("active", stepId === id);
   });
   tarotState.step = id;
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -361,47 +385,84 @@ function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function shuffleArray(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
 function getNeedCount() {
   return spreadMap[tarotState.spread].count;
 }
 
+function escapeHtml(str = "") {
+  return String(str).replace(/[&<>"']/g, char => {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return map[char];
+  });
+}
+
 function bindChoices(groupId, stateKey) {
   const group = document.getElementById(groupId);
+  if (!group) return;
+
   group.addEventListener("click", event => {
     const btn = event.target.closest(".tarot-choice");
     if (!btn) return;
 
-    group.querySelectorAll(".tarot-choice").forEach(item => item.classList.remove("active"));
-    btn.classList.add("active");
+    group.querySelectorAll(".tarot-choice").forEach(item => {
+      item.classList.remove("active");
+    });
 
+    btn.classList.add("active");
     tarotState[stateKey] = btn.dataset[stateKey];
+
+    tarotState.confirmed = false;
+    const startBtn = document.getElementById("startShuffleBtn");
+    const confirmText = document.getElementById("confirmText");
+    if (startBtn) startBtn.disabled = true;
+    if (confirmText) confirmText.textContent = "问题类型或牌阵已调整，请重新确认问题。";
   });
+}
+
+function showToast(message) {
+  let toast = document.querySelector(".tarot-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "tarot-toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1800);
 }
 
 function buildFanCards() {
   const fanStage = document.getElementById("fanStage");
   fanStage.innerHTML = "";
 
-  const total = 18;
-  const startAngle = -52;
-  const endAngle = 52;
+  const total = window.innerWidth <= 720 ? 12 : 18;
+  const startAngle = window.innerWidth <= 720 ? -46 : -52;
+  const endAngle = window.innerWidth <= 720 ? 46 : 52;
 
   for (let i = 0; i < total; i++) {
     const card = document.createElement("button");
     card.className = "fan-card";
     card.type = "button";
+    card.setAttribute("aria-label", "抽取一张塔罗牌");
 
     const angle = startAngle + ((endAngle - startAngle) / (total - 1)) * i;
-    const offset = (i - total / 2) * 15;
+    const offset = (i - total / 2) * (window.innerWidth <= 720 ? 18 : 15);
 
-    card.style.transform = `translateX(${offset - 47}px) rotate(${angle}deg)`;
+    card.style.transform = `translateX(${offset - 43}px) rotate(${angle}deg)`;
     card.dataset.index = i;
 
-    card.addEventListener("click", drawRandomCard);
+    card.addEventListener("click", () => drawRandomCard(card));
 
     fanStage.appendChild(card);
   }
@@ -409,7 +470,7 @@ function buildFanCards() {
   updateDrawHint();
 }
 
-function drawRandomCard() {
+function drawRandomCard(cardButton) {
   const needCount = getNeedCount();
 
   if (tarotState.selectedCards.length >= needCount) return;
@@ -425,11 +486,19 @@ function drawRandomCard() {
     revealed: false
   });
 
+  if (cardButton) {
+    cardButton.disabled = true;
+    cardButton.style.opacity = "0.25";
+    cardButton.style.pointerEvents = "none";
+    cardButton.style.transform += " translateY(-28px)";
+  }
+
   renderDrawnList();
   updateDrawHint();
 
   if (tarotState.selectedCards.length >= needCount) {
     document.getElementById("finishDrawBtn").disabled = false;
+    showToast("抽牌完成，可以进入牌阵。");
   }
 }
 
@@ -437,8 +506,8 @@ function updateDrawHint() {
   const needCount = getNeedCount();
   const current = tarotState.selectedCards.length;
   const text = current >= needCount
-    ? "抽牌完成，请进入布牌阵。"
-    : `请点击任意牌面抽牌，还需要抽取 ${needCount - current} 张。`;
+    ? "抽牌完成。请进入牌阵，准备查看你的专属解读。"
+    : `请凭直觉点击牌面抽牌，还需要抽取 ${needCount - current} 张。`;
 
   document.getElementById("drawHint").textContent = text;
 }
@@ -449,7 +518,7 @@ function renderDrawnList() {
 
   tarotState.selectedCards.forEach((card, index) => {
     const item = document.createElement("span");
-    item.textContent = `第 ${index + 1} 张牌已抽取`;
+    item.textContent = `第 ${index + 1} 张牌已回应`;
     drawnList.appendChild(item);
   });
 }
@@ -475,6 +544,68 @@ function renderSpreadStage() {
   });
 }
 
+function getOrientationText(card) {
+  return card.orientation === "upright" ? "正位" : "逆位";
+}
+
+function getKeywords(card) {
+  const base = keywordMap[card.orientation];
+  const nameKeywords = {
+    愚者: ["新开始", "冒险", "自由"],
+    魔术师: ["行动力", "资源", "表达"],
+    女祭司: ["直觉", "秘密", "观察"],
+    女皇: ["滋养", "成长", "关系"],
+    皇帝: ["秩序", "责任", "掌控"],
+    教皇: ["规则", "导师", "传统"],
+    恋人: ["选择", "吸引", "价值观"],
+    战车: ["推进", "胜利", "目标"],
+    力量: ["耐心", "自信", "温柔"],
+    隐士: ["沉淀", "独处", "内省"],
+    命运之轮: ["转折", "变化", "机会"],
+    正义: ["公平", "判断", "规则"],
+    倒吊人: ["等待", "换角度", "牺牲"],
+    死神: ["结束", "转化", "重生"],
+    节制: ["平衡", "调和", "节奏"],
+    恶魔: ["束缚", "欲望", "执念"],
+    高塔: ["冲击", "风险", "重建"],
+    星星: ["希望", "疗愈", "愿景"],
+    月亮: ["迷雾", "情绪", "潜意识"],
+    太阳: ["明朗", "成功", "生命力"],
+    审判: ["复盘", "觉醒", "决定"],
+    世界: ["完成", "整合", "阶段成果"]
+  };
+
+  return [...(nameKeywords[card.name] || []), ...base].slice(0, 5);
+}
+
+function buildRichReading(card, positionName) {
+  const orientationText = getOrientationText(card);
+  const category = tarotState.category;
+  const meaning = card[card.orientation][category];
+  const categoryInfo = categoryAdviceLabel[category];
+  const keywords = getKeywords(card).join("、");
+
+  const orientationExplain = card.orientation === "upright"
+    ? `这张牌以正位出现，说明「${positionName}」位置上的能量较为顺畅，事情存在被推进、被看见或逐步成形的空间。`
+    : `这张牌以逆位出现，并不代表坏结果，而是在提醒你：「${positionName}」位置上可能有延迟、回避、失衡或尚未处理好的部分。`;
+
+  const questionExplain = `结合你的问题「${escapeHtml(tarotState.question)}」，${meaning} 这表示你现在不宜只看表面结果，更需要理解事情背后的节奏、动机和现实条件。`;
+
+  const action = `接下来可以围绕「${categoryInfo.focus}」行动：${categoryInfo.action}。如果你能先处理最关键的一处阻碍，后续趋势会更容易打开。`;
+
+  const caution = `${categoryInfo.caution} 尤其当你感到急躁、失望或过度期待时，先停下来确认事实，再做选择。`;
+
+  return {
+    keywords,
+    orientationExplain,
+    questionExplain,
+    action,
+    caution,
+    short: meaning,
+    title: `${card.name} · ${orientationText}`
+  };
+}
+
 function renderRevealStage() {
   const revealStage = document.getElementById("revealStage");
   const spread = spreadMap[tarotState.spread];
@@ -487,14 +618,15 @@ function renderRevealStage() {
     const slot = document.createElement("div");
     slot.className = "reveal-slot";
 
-    const orientationText = card.orientation === "upright" ? "正位" : "逆位";
-    const meaning = card[card.orientation][tarotState.category];
+    const orientationText = getOrientationText(card);
+    const rich = buildRichReading(card, spread.positions[index]);
+    const isReversed = card.orientation === "reversed";
 
     slot.innerHTML = `
       <div class="reveal-card" data-index="${index}">
         <div class="reveal-card-inner">
           <div class="reveal-card-face reveal-card-back"></div>
-          <div class="reveal-card-face reveal-card-front ${card.orientation === "reversed" ? "reversed" : ""}">
+          <div class="reveal-card-face reveal-card-front ${isReversed ? "reversed" : ""}">
             <div>
               <div class="card-symbol">${card.symbol}</div>
               <div class="card-name">${card.name}</div>
@@ -503,10 +635,14 @@ function renderRevealStage() {
           </div>
         </div>
       </div>
+
       <div class="reveal-position-name">${spread.positions[index]}</div>
+
       <div class="reveal-reading" hidden>
-        <strong>${card.name} · ${orientationText}</strong><br>
-        ${meaning}
+        <strong>${card.name} · ${orientationText}</strong>
+        <p><span class="reading-label">关键词：</span>${rich.keywords}</p>
+        <p>${rich.short}</p>
+        <p>${rich.orientationExplain}</p>
       </div>
     `;
 
@@ -527,6 +663,7 @@ function renderRevealStage() {
 
       if (tarotState.revealedCount >= tarotState.selectedCards.length) {
         document.getElementById("goSummaryBtn").disabled = false;
+        showToast("牌面已全部揭示，可以查看完整总结。");
       }
     });
 
@@ -539,11 +676,11 @@ function getToneSummary() {
   const reversedCount = tarotState.selectedCards.length - uprightCount;
 
   if (uprightCount > reversedCount) {
-    return "整体趋势偏积极，说明事情存在推进空间。你当前更适合主动沟通、明确目标，并把已经具备的资源利用起来。";
+    return "整体趋势偏积极，说明这件事存在推进空间。你当前更适合主动沟通、明确目标，并把已经具备的资源利用起来。";
   }
 
   if (reversedCount > uprightCount) {
-    return "整体趋势提醒你先处理阻碍。并不是结果不好，而是当前仍有情绪、信息、节奏或现实条件需要调整。";
+    return "整体趋势提醒你先处理阻碍。牌面并不是在否定结果，而是在提示当前仍有情绪、信息、节奏或现实条件需要调整。";
   }
 
   return "整体趋势呈现平衡状态，机会与挑战并存。你需要同时保持理性判断和行动力。";
@@ -571,63 +708,104 @@ function getAdvice() {
   return adviceMap[category][spread];
 }
 
+function getOpportunityText() {
+  const hasUpright = tarotState.selectedCards.some(card => card.orientation === "upright");
+
+  if (hasUpright) {
+    return "机会在于你已经拥有一部分可用资源，可能是经验、人脉、表达能力、过去积累或即将出现的窗口。与其等待外界完全明朗，不如先把能推进的部分整理出来。";
+  }
+
+  return "机会并没有消失，只是目前更适合从修正和复盘中寻找突破口。先解决小问题，会比直接追求大结果更有效。";
+}
+
+function getRiskText() {
+  const reversedCards = tarotState.selectedCards.filter(card => card.orientation === "reversed");
+
+  if (reversedCards.length) {
+    const names = reversedCards.map(card => card.name).join("、");
+    return `风险主要来自「${names}」所提示的逆位能量：可能是拖延、沟通偏差、情绪消耗、节奏失衡或对现实情况判断不足。越早正视，后续越容易掌握主动。`;
+  }
+
+  return "风险并不明显，但也不要因为牌面偏顺就忽略细节。保持节奏、确认事实、按计划执行，能让好趋势更稳定。";
+}
+
+function getNextStepText() {
+  return "接下来 7 天，建议你只选择一件最容易开始、最能改变当前状态的小事去行动。塔罗更像一面镜子，它提醒你看见状态，但真正改变结果的仍然是你的选择与行动。";
+}
+
 function renderSummary() {
   const summaryBox = document.getElementById("summaryBox");
   const spread = spreadMap[tarotState.spread];
   const categoryName = categoryMap[tarotState.category];
 
   const cardHtml = tarotState.selectedCards.map((card, index) => {
-    const orientationText = card.orientation === "upright" ? "正位" : "逆位";
-    const meaning = card[card.orientation][tarotState.category];
+    const orientationText = getOrientationText(card);
+    const rich = buildRichReading(card, spread.positions[index]);
+    const isReversed = card.orientation === "reversed";
 
     return `
-      <div class="summary-section">
-        <h3>${spread.positions[index]}：${card.name} · ${orientationText}</h3>
-        <p>${meaning}</p>
+      <div class="summary-section summary-card">
+        <div class="summary-card-head">
+          <div class="summary-mini-card ${isReversed ? "reversed" : ""}">${card.symbol}</div>
+          <div>
+            <h3 class="summary-card-title">
+              ${spread.positions[index]}：${card.name}
+              <span class="orientation-badge ${isReversed ? "reversed" : ""}">${orientationText}</span>
+            </h3>
+            <div class="summary-card-subtitle">关键词：${rich.keywords}</div>
+          </div>
+        </div>
+
+        <div class="reading-block">
+          <p><span class="reading-label">牌义解释：</span>${rich.short}</p>
+          <p><span class="reading-label">结合问题：</span>${rich.questionExplain}</p>
+          <p><span class="reading-label">当前提醒：</span>${rich.orientationExplain}</p>
+          <p><span class="reading-label">行动建议：</span>${rich.action}</p>
+          <p><span class="reading-label">注意事项：</span>${rich.caution}</p>
+        </div>
       </div>
     `;
   }).join("");
 
-  const finalText = `${getToneSummary()} ${getAdvice()}`;
-
   summaryBox.innerHTML = `
-    <div class="summary-section">
-      <h3>你的问题</h3>
-      <p>${escapeHtml(tarotState.question)}</p>
+    <div class="summary-hero">
+      <div class="summary-section">
+        <h3>你的问题</h3>
+        <p>${escapeHtml(tarotState.question)}</p>
+      </div>
+
+      <div class="summary-section">
+        <h3>占卜方向</h3>
+        <p>${categoryName} · ${spread.name}</p>
+      </div>
     </div>
 
     <div class="summary-section">
-      <h3>占卜方向</h3>
-      <p>${categoryName} · ${spread.name}</p>
+      <h3>总体趋势</h3>
+      <p>${getToneSummary()}</p>
     </div>
 
     <div class="summary-card-list">
       ${cardHtml}
     </div>
 
-    <div class="summary-section">
-      <h3>综合总结</h3>
-      <p>${finalText}</p>
+    <div class="summary-hero">
+      <div class="summary-section">
+        <h3>机会</h3>
+        <p>${getOpportunityText()}</p>
+      </div>
+
+      <div class="summary-section">
+        <h3>风险</h3>
+        <p>${getRiskText()}</p>
+      </div>
     </div>
 
     <div class="summary-section">
-      <h3>行动建议</h3>
-      <p>接下来 7 天，建议你选择一件最容易开始的小事去行动。塔罗更像是一面镜子，它提醒你看见当前状态，但真正改变结果的仍然是你的选择与行动。</p>
+      <h3>下一步建议</h3>
+      <p>${getAdvice()} ${getNextStepText()}</p>
     </div>
   `;
-}
-
-function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, char => {
-    const map = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    };
-    return map[char];
-  });
 }
 
 function resetTarot() {
@@ -645,6 +823,8 @@ function resetTarot() {
   document.getElementById("finishDrawBtn").disabled = true;
   document.getElementById("finishCutBtn").disabled = true;
   document.getElementById("cutDeck").classList.remove("cut-done");
+  document.getElementById("fanStage").innerHTML = "";
+  document.getElementById("drawnList").innerHTML = "";
 
   document.querySelectorAll("#categoryGroup .tarot-choice").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.category === "love");
@@ -662,39 +842,215 @@ function buildShareText() {
   const spread = spreadMap[tarotState.spread];
 
   const cardsText = tarotState.selectedCards.map((card, index) => {
-    const orientationText = card.orientation === "upright" ? "正位" : "逆位";
-    return `${spread.positions[index]}：${card.name} ${orientationText}`;
-  }).join("\n");
+    const orientationText = getOrientationText(card);
+    const rich = buildRichReading(card, spread.positions[index]);
+    return `${index + 1}. ${spread.positions[index]}：${card.name} · ${orientationText}
+关键词：${rich.keywords}
+解读：${rich.short}`;
+  }).join("\n\n");
 
-  return `我的塔罗占卜结果
+  const link = location.href.split("#")[0];
+
+  return `🔮 我的塔罗占卜结果
+
 问题：${tarotState.question}
 方向：${categoryName}
 牌阵：${spread.name}
+
 ${cardsText}
 
-综合：${getToneSummary()}`;
+总体趋势：
+${getToneSummary()}
+
+机会：
+${getOpportunityText()}
+
+风险：
+${getRiskText()}
+
+下一步建议：
+${getAdvice()} ${getNextStepText()}
+
+来试试你的塔罗占卜：
+${link}`;
 }
 
-async function shareResult() {
+async function copyShareText() {
   const text = buildShareText();
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "我的塔罗占卜结果",
-        text
-      });
-      return;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   try {
     await navigator.clipboard.writeText(text);
-    alert("占卜结果已复制，可以发送给好友。");
+    showToast("占卜结果已复制，可以分享给好友。");
   } catch (error) {
-    alert("当前浏览器不支持自动复制，请手动截图分享。");
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+    showToast("占卜结果已复制。");
+  }
+}
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
+  const words = String(text).split("");
+  let line = "";
+  let lines = [];
+
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i];
+    const metrics = ctx.measureText(testLine);
+
+    if (metrics.width > maxWidth && i > 0) {
+      lines.push(line);
+      line = words[i];
+
+      if (lines.length >= maxLines) break;
+    } else {
+      line = testLine;
+    }
+  }
+
+  if (line && lines.length < maxLines) lines.push(line);
+
+  lines.forEach((item, index) => {
+    ctx.fillText(item, x, y + index * lineHeight);
+  });
+
+  return y + lines.length * lineHeight;
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.closePath();
+}
+
+function createShareImage() {
+  if (!tarotState.selectedCards.length) {
+    showToast("请先完成占卜。");
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  const width = 900;
+  const height = tarotState.selectedCards.length === 1 ? 1280 : 1580;
+  const dpr = 2;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#12091f");
+  gradient.addColorStop(0.45, "#221039");
+  gradient.addColorStop(1, "#3b0f37");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  for (let i = 0; i < 140; i++) {
+    ctx.fillStyle = i % 5 === 0 ? "rgba(250,204,21,0.45)" : "rgba(255,255,255,0.22)";
+    ctx.beginPath();
+    ctx.arc(Math.random() * width, Math.random() * height, Math.random() * 1.6 + 0.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "#facc15";
+  ctx.font = "700 28px sans-serif";
+  ctx.fillText("Tarot Fortune Reading", 60, 84);
+
+  ctx.fillStyle = "#fff7ed";
+  ctx.font = "900 58px sans-serif";
+  ctx.fillText("我的塔罗占卜结果", 60, 155);
+
+  ctx.fillStyle = "rgba(255,255,255,0.76)";
+  ctx.font = "30px sans-serif";
+  let y = 220;
+  y = wrapCanvasText(ctx, `问题：${tarotState.question}`, 60, y, width - 120, 44, 3) + 28;
+
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  roundRect(ctx, 50, y, width - 100, 150, 28);
+  ctx.fill();
+
+  ctx.fillStyle = "#fef3c7";
+  ctx.font = "900 30px sans-serif";
+  ctx.fillText("总体趋势", 80, y + 48);
+
+  ctx.fillStyle = "rgba(255,255,255,0.78)";
+  ctx.font = "28px sans-serif";
+  wrapCanvasText(ctx, getToneSummary(), 80, y + 92, width - 160, 40, 2);
+
+  y += 190;
+
+  const spread = spreadMap[tarotState.spread];
+
+  tarotState.selectedCards.forEach((card, index) => {
+    const orientationText = getOrientationText(card);
+    const rich = buildRichReading(card, spread.positions[index]);
+    const isReversed = card.orientation === "reversed";
+
+    ctx.fillStyle = "rgba(255,255,255,0.11)";
+    roundRect(ctx, 50, y, width - 100, 255, 30);
+    ctx.fill();
+
+    ctx.fillStyle = isReversed ? "#f9a8d4" : "#fde68a";
+    roundRect(ctx, 80, y + 36, 108, 156, 18);
+    ctx.fill();
+
+    ctx.fillStyle = "#2e1065";
+    ctx.font = "50px sans-serif";
+    ctx.fillText(card.symbol, 112, y + 125);
+
+    ctx.fillStyle = "#fff7ed";
+    ctx.font = "900 34px sans-serif";
+    ctx.fillText(`${spread.positions[index]}：${card.name} · ${orientationText}`, 220, y + 62);
+
+    ctx.fillStyle = "#facc15";
+    ctx.font = "700 24px sans-serif";
+    ctx.fillText(`关键词：${rich.keywords}`, 220, y + 105);
+
+    ctx.fillStyle = "rgba(255,255,255,0.76)";
+    ctx.font = "26px sans-serif";
+    wrapCanvasText(ctx, rich.short, 220, y + 148, width - 290, 38, 3);
+
+    y += 285;
+  });
+
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  roundRect(ctx, 50, y, width - 100, 190, 30);
+  ctx.fill();
+
+  ctx.fillStyle = "#fef3c7";
+  ctx.font = "900 30px sans-serif";
+  ctx.fillText("下一步建议", 80, y + 52);
+
+  ctx.fillStyle = "rgba(255,255,255,0.78)";
+  ctx.font = "26px sans-serif";
+  wrapCanvasText(ctx, getNextStepText(), 80, y + 96, width - 160, 38, 3);
+
+  ctx.fillStyle = "rgba(255,255,255,0.58)";
+  ctx.font = "22px sans-serif";
+  ctx.fillText(location.host || "Tarot Reading", 60, height - 60);
+
+  const imageUrl = canvas.toDataURL("image/png");
+
+  const link = document.createElement("a");
+  link.href = imageUrl;
+  link.download = `tarot-reading-${Date.now()}.png`;
+
+  try {
+    link.click();
+    showToast("分享图已生成。");
+  } catch (error) {
+    window.open(imageUrl, "_blank");
   }
 }
 
@@ -710,7 +1066,7 @@ function initTarot() {
     const question = document.getElementById("questionInput").value.trim();
 
     if (!question) {
-      alert("请先输入你的占卜问题。");
+      showToast("请先输入你的占卜问题。");
       return;
     }
 
@@ -721,6 +1077,7 @@ function initTarot() {
       `已确认：${categoryMap[tarotState.category]} / ${spreadMap[tarotState.spread].name}`;
 
     document.getElementById("startShuffleBtn").disabled = false;
+    showToast("问题已确认，准备开始洗牌。");
   });
 
   document.getElementById("startShuffleBtn").addEventListener("click", () => {
@@ -739,6 +1096,7 @@ function initTarot() {
 
   document.getElementById("finishCutBtn").addEventListener("click", () => {
     tarotState.selectedCards = [];
+    tarotState.revealedCount = 0;
     document.getElementById("finishDrawBtn").disabled = true;
     buildFanCards();
     showStep("stepDraw");
@@ -761,7 +1119,20 @@ function initTarot() {
 
   document.getElementById("restartBtn").addEventListener("click", resetTarot);
 
-  document.getElementById("shareBtn").addEventListener("click", shareResult);
+  const copyBtn = document.getElementById("copyShareBtn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", copyShareText);
+  }
+
+  const imageBtn = document.getElementById("createShareImageBtn");
+  if (imageBtn) {
+    imageBtn.addEventListener("click", createShareImage);
+  }
+
+  const oldShareBtn = document.getElementById("shareBtn");
+  if (oldShareBtn) {
+    oldShareBtn.addEventListener("click", copyShareText);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", initTarot);
