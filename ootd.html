@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>向日葵 AI 旅游穿搭顾问</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #fff4e6 0%, #ffffff 48%, #f3f7fb 100%);
+      color: #111827;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #fffaf3;
+      box-shadow: 0 0 40px rgba(80, 60, 40, 0.08);
+      overflow-x: hidden;
+    }
+
+    .hero {
+      padding: 34px 24px 30px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 190, 120, 0.42), transparent 34%),
+        radial-gradient(circle at 92% 10%, rgba(180, 215, 255, 0.52), transparent 32%),
+        linear-gradient(135deg, #fff0d8, #f4f9ff);
+      border-bottom-left-radius: 34px;
+      border-bottom-right-radius: 34px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 12px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      color: #8a6334;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .back-home {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #8a6334;
+  font-size: 12px;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+}
+
+.back-home:active {
+  transform: scale(0.98);
+}
+    .hero h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.22;
+      letter-spacing: -0.8px;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: #6e6257;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .panel {
+      margin: 18px 16px;
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(238, 224, 204, 0.86);
+      box-shadow: 0 12px 32px rgba(112, 84, 48, 0.09);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .section-title span {
+      color: #999;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    label {
+      color: #65594c;
+      font-size: 13px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 13px 14px;
+      border-radius: 15px;
+      background: #f8f2ea;
+      color: #222;
+      font-size: 15px;
+    }
+
+    input:focus,
+    select:focus {
+      background: #fff;
+      box-shadow: 0 0 0 2px #ffb85f;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 15px 16px;
+      border: none;
+      border-radius: 17px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+      box-shadow: 0 13px 24px rgba(255, 113, 72, 0.27);
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .weather-card {
+      display: none;
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #eef7ff, #fff6e9);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .weather-main strong {
+      font-size: 23px;
+    }
+
+    .weather-icon {
+      font-size: 34px;
+    }
+
+    .weather-card p {
+      margin: 9px 0 0;
+      color: #666;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .manual-weather {
+      display: none;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(194, 167, 129, 0.45);
+    }
+
+    .manual-weather-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #7a6650;
+    }
+
+    .mini-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #fff;
+      color: #8a6334;
+      border: 1px solid #ead7bd;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .cards {
+      display: grid;
+      gap: 14px;
+    }
+
+    .empty {
+      padding: 22px 14px;
+      border: 1px dashed #e5d8c4;
+      border-radius: 18px;
+      background: #fff;
+      color: #999;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .outfit-card {
+      padding: 14px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid #f0e3d2;
+      box-shadow: 0 10px 26px rgba(84, 61, 34, 0.08);
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .outfit-card.active {
+      border: 2px solid #ff9f43;
+      box-shadow: 0 14px 34px rgba(255, 159, 67, 0.24);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .thumb {
+      width: 72px;
+      height: 72px;
+      flex: 0 0 72px;
+      display: grid;
+      place-items: center;
+      border-radius: 20px;
+      font-size: 34px;
+      background: linear-gradient(135deg, #fff1d9, #eef5ff);
+    }
+
+    .card-info h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .card-info p {
+      margin: 6px 0 0;
+      color: #6c6259;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #f8f2ea;
+      color: #705d45;
+      font-size: 12px;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .look-board {
+      padding: 16px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fff, #fbf2e7);
+      border: 1px solid #ecdcc5;
+    }
+
+    .illustration {
+      position: relative;
+      min-height: 390px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 214, 165, 0.58), transparent 30%),
+        radial-gradient(circle at 20% 75%, rgba(190, 220, 255, 0.48), transparent 30%),
+        linear-gradient(180deg, #f6f8ff, #fff4e8);
+      border: 1px solid rgba(236, 220, 197, 0.8);
+    }
+
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.9;
+    }
+
+    .sun {
+      position: absolute;
+      right: 38px;
+      top: 38px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #ffd166;
+      box-shadow: 0 0 35px rgba(255, 209, 102, 0.75);
+    }
+
+    .cloud {
+      position: absolute;
+      left: 34px;
+      top: 56px;
+      width: 76px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      bottom: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+    }
+
+    .cloud::before {
+      left: 12px;
+      width: 30px;
+      height: 30px;
+    }
+
+    .cloud::after {
+      left: 34px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .ground {
+      position: absolute;
+      left: -20px;
+      right: -20px;
+      bottom: -38px;
+      height: 130px;
+      border-radius: 50% 50% 0 0;
+      background: rgba(226, 209, 178, 0.42);
+    }
+
+    .castle {
+      position: absolute;
+      left: 26px;
+      bottom: 70px;
+      width: 108px;
+      height: 110px;
+      opacity: 0.32;
+      display: none;
+    }
+
+    .castle div {
+      position: absolute;
+      bottom: 0;
+      background: #c69c6d;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tower1 { left: 0; width: 28px; height: 80px; }
+    .tower2 { left: 40px; width: 32px; height: 110px; }
+    .tower3 { right: 0; width: 28px; height: 70px; }
+
+    .wave {
+      position: absolute;
+      left: -10%;
+      bottom: 62px;
+      width: 120%;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(88, 168, 220, 0.28);
+      display: none;
+    }
+
+    .mountain {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 70px;
+      height: 120px;
+      clip-path: polygon(0 100%, 20% 45%, 34% 78%, 54% 25%, 78% 82%, 100% 48%, 100% 100%);
+      background: rgba(103, 128, 93, 0.25);
+      display: none;
+    }
+
+    .building {
+      position: absolute;
+      left: 25px;
+      bottom: 72px;
+      width: 80px;
+      height: 135px;
+      border-radius: 12px 12px 0 0;
+      background: rgba(117, 135, 157, 0.22);
+      display: none;
+    }
+
+    .building::after {
+      content: "";
+      position: absolute;
+      right: -72px;
+      bottom: 0;
+      width: 58px;
+      height: 98px;
+      border-radius: 12px 12px 0 0;
+      background: rgba(117, 135, 157, 0.18);
+    }
+
+    .model {
+      position: absolute;
+      left: 50%;
+      top: 46px;
+      transform: translateX(-50%);
+      width: 180px;
+      height: 310px;
+      z-index: 4;
+    }
+
+    .hair {
+      position: absolute;
+      left: 56px;
+      top: 0;
+      width: 68px;
+      height: 82px;
+      background: #4b2d24;
+      border-radius: 50% 50% 46% 46%;
+      z-index: 1;
+    }
+
+    .face {
+      position: absolute;
+      left: 69px;
+      top: 13px;
+      width: 43px;
+      height: 51px;
+      background: #f0c09b;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .neck {
+      position: absolute;
+      left: 80px;
+      top: 58px;
+      width: 22px;
+      height: 25px;
+      background: #e8b58f;
+      z-index: 2;
+    }
+
+    .headwear {
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      transform: translateX(-50%);
+      min-width: 74px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #8b5c2b;
+      font-size: 12px;
+      text-align: center;
+      z-index: 6;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .outer {
+      position: absolute;
+      left: 35px;
+      top: 74px;
+      width: 110px;
+      height: 124px;
+      border-radius: 34px 34px 18px 18px;
+      background: #e9d8c0;
+      z-index: 2;
+      clip-path: polygon(12% 0, 88% 0, 100% 100%, 58% 100%, 50% 25%, 42% 100%, 0 100%);
+    }
+
+    .top {
+      position: absolute;
+      left: 57px;
+      top: 83px;
+      width: 66px;
+      height: 89px;
+      border-radius: 24px 24px 16px 16px;
+      background: #fff;
+      z-index: 3;
+    }
+
+    .skirt {
+      position: absolute;
+      left: 47px;
+      top: 160px;
+      width: 88px;
+      height: 74px;
+      background: #8db5de;
+      z-index: 3;
+      clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%);
+      border-radius: 12px 12px 28px 28px;
+    }
+
+    .pants {
+      position: absolute;
+      left: 55px;
+      top: 161px;
+      width: 70px;
+      height: 98px;
+      background: #7e9ec2;
+      z-index: 3;
+      border-radius: 18px 18px 12px 12px;
+      display: none;
+    }
+
+    .leg-l,
+    .leg-r {
+      position: absolute;
+      top: 228px;
+      width: 23px;
+      height: 55px;
+      border-radius: 14px;
+      background: #f0c09c;
+      z-index: 2;
+    }
+
+    .leg-l {
+      left: 60px;
+    }
+
+    .leg-r {
+      left: 98px;
+    }
+
+    .shoe-l,
+    .shoe-r {
+      position: absolute;
+      top: 277px;
+      width: 40px;
+      height: 15px;
+      border-radius: 999px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .shoe-l {
+      left: 50px;
+    }
+
+    .shoe-r {
+      left: 92px;
+    }
+
+    .bag {
+      position: absolute;
+      right: 16px;
+      top: 140px;
+      width: 45px;
+      height: 53px;
+      border-radius: 13px;
+      background: #c9aa80;
+      z-index: 5;
+    }
+
+    .bag::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: -17px;
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(100, 70, 40, 0.5);
+      border-bottom: none;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .illustration-label {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      color: #6b5d50;
+      font-size: 12px;
+      line-height: 1.6;
+      z-index: 10;
+    }
+
+    .caption {
+      margin-top: 14px;
+      padding: 15px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.82);
+    }
+
+    .caption h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .caption p {
+      margin: 0;
+      color: #62594f;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .detail {
+      padding: 12px;
+      border-radius: 16px;
+      background: #fffaf3;
+      color: #5e554d;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .detail strong {
+      color: #2f251b;
+    }
+
+    .footer {
+      padding: 18px 20px 30px;
+      color: #aaa;
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (min-width: 481px) {
+      body {
+        padding: 20px 0;
+      }
+
+      .page {
+        border-radius: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+  	<a class="back-home" href="./index.html">← 返回近期计划</a>
+
+ 	 <div class="brand">✨ 向日葵工具箱</div>
+  	<h1>AI 旅游穿搭顾问</h1>
+ 	 <p>
+   	 根据目的地、出行日期、天气体感和身材信息，为你推荐适合旅行场景和拍照氛围的穿搭方案。
+  	</p>
+     </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>出行信息</h2>
+        <span>精准推荐</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>目的地 / 景点</label>
+          <input id="destination" type="text" placeholder="例如：三亚海边、迪士尼、环球影城、故宫、艺术馆" value="三亚海边" />
+        </div>
+
+        <div class="field">
+          <label>出行日期</label>
+          <input id="date" type="date" />
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>性别</label>
+            <select id="gender">
+              <option value="女">女</option>
+              <option value="男">男</option>
+              <option value="中性">中性 / 不限</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>风格偏好</label>
+            <select id="style">
+              <option value="出片优先">出片优先</option>
+              <option value="显瘦显高">显瘦显高</option>
+              <option value="舒适耐走">舒适耐走</option>
+              <option value="甜美可爱">甜美可爱</option>
+              <option value="高级简约">高级简约</option>
+              <option value="甜酷个性">甜酷个性</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>身高 cm</label>
+            <input id="height" type="number" placeholder="例如：165" value="167" />
+          </div>
+
+          <div class="field">
+            <label>体重 kg</label>
+            <input id="weight" type="number" placeholder="例如：52" value="59" />
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="generateOutfits()">生成穿搭方案</button>
+
+      <div id="weatherCard" class="weather-card">
+        <div class="weather-main">
+          <div>
+            <strong id="weatherTemp">--℃ - --℃</strong>
+            <div id="weatherText">天气信息</div>
+          </div>
+          <div id="weatherIcon" class="weather-icon">🌤️</div>
+        </div>
+        <p id="sceneDesc"></p>
+
+        <div id="manualWeather" class="manual-weather">
+          <div class="manual-weather-title">
+            <span>调整当天实际天气</span>
+            <button class="mini-btn" onclick="applyManualWeather()">更新推荐</button>
+          </div>
+
+          <div class="form-grid">
+            <div class="row">
+              <div class="field">
+                <label>最低温 ℃</label>
+                <input id="manualMin" type="number" />
+              </div>
+              <div class="field">
+                <label>最高温 ℃</label>
+                <input id="manualMax" type="number" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>天气</label>
+                <select id="manualWeatherType">
+                  <option value="晴">晴</option>
+                  <option value="多云">多云</option>
+                  <option value="阴">阴</option>
+                  <option value="小雨">小雨</option>
+                  <option value="阵雨">阵雨</option>
+                  <option value="雷阵雨">雷阵雨</option>
+                  <option value="雪">雪</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>紫外线</label>
+                <select id="manualUv">
+                  <option value="弱">弱</option>
+                  <option value="中">中</option>
+                  <option value="强">强</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label>湿度</label>
+                <select id="manualHumidity">
+                  <option value="低">低</option>
+                  <option value="中">中</option>
+                  <option value="高">高</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>风力</label>
+                <select id="manualWind">
+                  <option value="小">小</option>
+                  <option value="中">中</option>
+                  <option value="大">大</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <h2>推荐方案</h2>
+        <span>选择喜欢的搭配</span>
+      </div>
+
+      <div id="cards" class="cards">
+        <div class="empty">
+          填写出行信息后，为你生成多套适合目的地、天气和身材的穿搭方案。
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="panel result">
+      <div class="section-title">
+        <h2>穿搭示意图</h2>
+        <span>稳定展示</span>
+      </div>
+
+      <div class="look-board">
+        <div class="illustration">
+          <div class="scene-bg">
+            <div class="sun"></div>
+            <div class="cloud"></div>
+            <div class="ground"></div>
+            <div id="castle" class="castle">
+              <div class="tower1"></div>
+              <div class="tower2"></div>
+              <div class="tower3"></div>
+            </div>
+            <div id="wave" class="wave"></div>
+            <div id="mountain" class="mountain"></div>
+            <div id="building" class="building"></div>
+          </div>
+
+          <div class="model">
+            <div id="headwear" class="headwear">配饰</div>
+            <div class="hair"></div>
+            <div class="face"></div>
+            <div class="neck"></div>
+            <div id="outer" class="outer"></div>
+            <div id="top" class="top"></div>
+            <div id="skirt" class="skirt"></div>
+            <div id="pants" class="pants"></div>
+            <div class="leg-l"></div>
+            <div class="leg-r"></div>
+            <div id="shoeL" class="shoe-l"></div>
+            <div id="shoeR" class="shoe-r"></div>
+            <div id="bag" class="bag"></div>
+          </div>
+
+          <div id="illustrationLabel" class="illustration-label">
+            选择方案后显示穿搭示意。
+          </div>
+        </div>
+
+        <div class="caption">
+          <h3 id="lookTitle">方案名称</h3>
+          <p id="lookDesc">选择方案后显示完整说明。</p>
+
+          <div class="detail-list">
+            <div class="detail" id="itemsDetail"></div>
+            <div class="detail" id="colorDetail"></div>
+            <div class="detail" id="weatherDetail"></div>
+            <div class="detail" id="bodyDetail"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      AIootd · 让每一次旅行都更出片
+    </div>
+  </main>
+
+  <script>
+    const destinationInput = document.getElementById("destination");
+    const dateInput = document.getElementById("date");
+    const genderInput = document.getElementById("gender");
+    const styleInput = document.getElementById("style");
+    const heightInput = document.getElementById("height");
+    const weightInput = document.getElementById("weight");
+
+    const weatherCard = document.getElementById("weatherCard");
+    const weatherTemp = document.getElementById("weatherTemp");
+    const weatherText = document.getElementById("weatherText");
+    const weatherIcon = document.getElementById("weatherIcon");
+    const sceneDesc = document.getElementById("sceneDesc");
+    const manualWeather = document.getElementById("manualWeather");
+
+    const manualMin = document.getElementById("manualMin");
+    const manualMax = document.getElementById("manualMax");
+    const manualWeatherType = document.getElementById("manualWeatherType");
+    const manualUv = document.getElementById("manualUv");
+    const manualHumidity = document.getElementById("manualHumidity");
+    const manualWind = document.getElementById("manualWind");
+
+    const cards = document.getElementById("cards");
+    const result = document.getElementById("result");
+
+    const lookTitle = document.getElementById("lookTitle");
+    const lookDesc = document.getElementById("lookDesc");
+    const itemsDetail = document.getElementById("itemsDetail");
+    const colorDetail = document.getElementById("colorDetail");
+    const weatherDetail = document.getElementById("weatherDetail");
+    const bodyDetail = document.getElementById("bodyDetail");
+    const illustrationLabel = document.getElementById("illustrationLabel");
+
+    dateInput.value = new Date().toISOString().split("T")[0];
+
+    let currentContext = null;
+    let currentPlans = [];
+
+    const climateCityMap = [
+      {
+        name: "三亚",
+        keywords: ["三亚", "海南", "海口", "亚龙湾", "蜈支洲", "大东海"],
+        sceneId: "beach",
+        climate: {
+          spring: { min: 23, max: 30, weather: "多云", humidity: "高", uv: "强", wind: "中" },
+          summer: { min: 26, max: 34, weather: "晴", humidity: "高", uv: "强", wind: "中" },
+          autumn: { min: 24, max: 31, weather: "多云", humidity: "中", uv: "强", wind: "中" },
+          winter: { min: 20, max: 27, weather: "晴", humidity: "中", uv: "中", wind: "小" }
+        }
+      },
+      {
+        name: "厦门",
+        keywords: ["厦门", "鼓浪屿", "曾厝垵"],
+        sceneId: "beach",
+        climate: {
+          spring: { min: 17, max: 24, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+          summer: { min: 25, max: 33, weather: "晴", humidity: "高", uv: "强", wind: "中" },
+          autumn: { min: 21, max: 28, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+          winter: { min: 11, max: 18, weather: "多云", humidity: "中", uv: "弱", wind: "中" }
+        }
+      },
+      {
+        name: "北京",
+        keywords: ["北京", "故宫", "颐和园", "天坛", "环球影城"],
+        sceneId: "city",
+        climate: {
+          spring: { min: 8, max: 22, weather: "晴", humidity: "低", uv: "中", wind: "中" },
+          summer: { min: 22, max: 32, weather: "晴", humidity: "中", uv: "强", wind: "小" },
+          autumn: { min: 9, max: 22, weather: "晴", humidity: "低", uv: "中", wind: "中" },
+          winter: { min: -6, max: 5, weather: "晴", humidity: "低", uv: "弱", wind: "中" }
+        }
+      },
+      {
+        name: "上海",
+        keywords: ["上海", "迪士尼", "迪斯尼", "外滩", "武康路"],
+        sceneId: "city",
+        climate: {
+          spring: { min: 12, max: 22, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+          summer: { min: 25, max: 34, weather: "晴", humidity: "高", uv: "强", wind: "小" },
+          autumn: { min: 15, max: 25, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+          winter: { min: 2, max: 10, weather: "多云", humidity: "中", uv: "弱", wind: "中" }
+        }
+      },
+      {
+        name: "成都",
+        keywords: ["成都", "春熙路", "太古里", "宽窄巷子"],
+        sceneId: "city",
+        climate: {
+          spring: { min: 12, max: 22, weather: "多云", humidity: "中", uv: "中", wind: "小" },
+          summer: { min: 23, max: 32, weather: "多云", humidity: "高", uv: "中", wind: "小" },
+          autumn: { min: 14, max: 24, weather: "多云", humidity: "中", uv: "弱", wind: "小" },
+          winter: { min: 4, max: 11, weather: "阴", humidity: "中", uv: "弱", wind: "小" }
+        }
+      },
+      {
+        name: "哈尔滨",
+        keywords: ["哈尔滨", "冰雪大世界", "雪乡"],
+        sceneId: "snow",
+        climate: {
+          spring: { min: 0, max: 12, weather: "晴", humidity: "低", uv: "中", wind: "中" },
+          summer: { min: 18, max: 28, weather: "多云", humidity: "中", uv: "中", wind: "小" },
+          autumn: { min: 2, max: 14, weather: "晴", humidity: "低", uv: "中", wind: "中" },
+          winter: { min: -24, max: -10, weather: "雪", humidity: "低", uv: "弱", wind: "中" }
+        }
+      }
+    ];
+
+    const sceneProfiles = [
+      {
+        id: "disney",
+        name: "迪士尼主题乐园",
+        emoji: "🏰",
+        keywords: ["迪士尼", "迪斯尼", "disney", "城堡", "乐园"],
+        priorities: ["童话感", "舒适耐走", "裙装或主题配饰", "拍照出片"]
+      },
+      {
+        id: "universal",
+        name: "环球影城",
+        emoji: "🎬",
+        keywords: ["环球影城", "环球", "哈利波特", "霍格沃茨"],
+        priorities: ["电影感", "学院风", "舒适耐走", "酷感"]
+      },
+      {
+        id: "beach",
+        name: "海边度假",
+        emoji: "🌊",
+        keywords: ["三亚", "海边", "沙滩", "海岛", "厦门", "青岛", "北海", "冲浪", "亚龙湾"],
+        priorities: ["清爽", "防晒", "度假感", "显肤色"]
+      },
+      {
+        id: "palace",
+        name: "古建人文",
+        emoji: "🏮",
+        keywords: ["故宫", "古镇", "古城", "园林", "寺庙", "颐和园", "古建"],
+        priorities: ["新中式", "文化氛围", "端庄", "出片"]
+      },
+      {
+        id: "art",
+        name: "艺术展览",
+        emoji: "🎨",
+        keywords: ["艺术馆", "美术馆", "展览", "博物馆", "画廊"],
+        priorities: ["高级感", "简约", "线条感", "低饱和"]
+      },
+      {
+        id: "mountain",
+        name: "户外自然",
+        emoji: "⛰️",
+        keywords: ["爬山", "徒步", "山", "森林", "草原", "露营", "公园", "湖", "西湖"],
+        priorities: ["舒适", "防风", "耐走", "防晒"]
+      },
+      {
+        id: "music",
+        name: "音乐现场",
+        emoji: "🎤",
+        keywords: ["音乐节", "演唱会", "livehouse", "音乐会"],
+        priorities: ["个性", "显腿长", "方便站立", "镜头感"]
+      },
+      {
+        id: "city",
+        name: "城市打卡",
+        emoji: "🏙️",
+        keywords: ["商场", "街区", "citywalk", "咖啡", "餐厅", "城市", "步行街"],
+        priorities: ["精致", "舒适", "显比例", "日常可穿"]
+      },
+      {
+        id: "snow",
+        name: "冰雪旅行",
+        emoji: "❄️",
+        keywords: ["雪", "冰雪", "滑雪", "哈尔滨", "雪乡"],
+        priorities: ["保暖", "防滑", "层次感", "亮色点缀"]
+      }
+    ];
+
+    const outfitTemplates = {
+      beach: {
+        female: [
+          {
+            title: "清爽防晒海岛风",
+            icon: "🌊",
+            type: "skirt",
+            items: ["浅色防晒衬衫", "白色吊带或背心", "高腰短裤或轻薄半裙", "凉鞋或洞洞鞋", "草帽", "墨镜", "编织包"],
+            colors: ["奶白", "浅蓝", "沙色", "薄荷绿"],
+            desc: "适合三亚、海岛和海边散步。重点是透气、防晒、清爽，浅色系在海边更显干净。",
+            palette: { outer: "#e9f4f4", top: "#fffaf2", bottom: "#b9d9ef", shoes: "#d7b98e", bag: "#c9a46c", accessory: "草帽" }
+          },
+          {
+            title: "法式白裙度假风",
+            icon: "🤍",
+            type: "skirt",
+            items: ["白色茶歇裙", "薄防晒开衫", "低跟凉鞋", "珍珠耳饰", "小草编包", "墨镜"],
+            colors: ["白色", "米色", "浅金", "草编色"],
+            desc: "适合海边拍照、餐厅和日落场景。白裙和蓝天海水很搭，照片干净有度假感。",
+            palette: { outer: "#f2eadc", top: "#fffaf4", bottom: "#ffffff", shoes: "#d8bd91", bag: "#caa46b", accessory: "墨镜" }
+          },
+          {
+            title: "辣妹海边拍照风",
+            icon: "🌴",
+            type: "skirt",
+            items: ["短款吊带", "高腰开衩半裙", "轻薄罩衫", "低跟凉鞋", "贝壳项链", "小号斜挎包"],
+            colors: ["奶黄", "白色", "浅绿", "金色"],
+            desc: "适合海边打卡和度假拍照。高腰线拉长比例，罩衫能防晒也能修饰手臂。",
+            palette: { outer: "#e8f0c8", top: "#ffe08a", bottom: "#ffffff", shoes: "#d6ad7d", bag: "#bc925f", accessory: "贝壳链" }
+          }
+        ],
+        male: [
+          {
+            title: "清爽海边少年风",
+            icon: "🌊",
+            type: "pants",
+            items: ["白色短袖", "浅蓝衬衫", "卡其短裤", "帆布鞋或凉鞋", "墨镜"],
+            colors: ["白色", "浅蓝", "卡其"],
+            desc: "适合海边散步和拍照，清爽耐看，也能兼顾防晒。",
+            palette: { outer: "#9ec8ee", top: "#ffffff", bottom: "#c7a16d", shoes: "#f6f0e7", bag: "#b78b5d", accessory: "墨镜" }
+          }
+        ]
+      },
+      disney: {
+        female: [
+          {
+            title: "甜美公主感",
+            icon: "👑",
+            type: "skirt",
+            items: ["奶油白针织开衫", "浅蓝或粉色 A 字连衣裙", "白色中筒袜", "玛丽珍鞋或小白鞋", "蝴蝶结发箍", "珍珠小包"],
+            colors: ["奶油白", "浅蓝", "樱花粉", "珍珠色"],
+            desc: "适合城堡、旋转木马和花车巡游。A 字裙摆有童话感，也比包身裙更方便游玩。",
+            palette: { outer: "#f3e8d7", top: "#fff8ef", bottom: "#9fc4ea", shoes: "#ffffff", bag: "#e8c4d8", accessory: "蝴蝶结" }
+          },
+          {
+            title: "米奇经典红黑风",
+            icon: "🎀",
+            type: "skirt",
+            items: ["黑色短款上衣", "红色百褶裙或 A 字裙", "白色中筒袜", "黑色玛丽珍鞋", "米奇发箍", "小号斜挎包"],
+            colors: ["黑色", "米奇红", "白色"],
+            desc: "经典迪士尼配色，辨识度高，适合主街、城堡和米奇合影。",
+            palette: { outer: "#1f1f1f", top: "#111111", bottom: "#d83a3a", shoes: "#111111", bag: "#ffffff", accessory: "米奇发箍" }
+          },
+          {
+            title: "舒适甜酷游园风",
+            icon: "✨",
+            type: "skirt",
+            items: ["短款卫衣或短夹克", "裤裙或 A 字短裙", "中筒袜", "厚底运动鞋", "发箍或棒球帽", "轻便双肩小包"],
+            colors: ["浅灰", "粉色", "黑色", "白色"],
+            desc: "适合全天排队和玩项目。裤裙更安心，同时保留甜酷感和拍照氛围。",
+            palette: { outer: "#b8b8c2", top: "#f6b7c7", bottom: "#2b2b2b", shoes: "#ffffff", bag: "#202020", accessory: "甜酷发箍" }
+          }
+        ],
+        male: [
+          {
+            title: "清爽少年游园风",
+            icon: "🏰",
+            type: "pants",
+            items: ["浅色衬衫或短袖", "直筒牛仔裤", "小白鞋", "米奇棒球帽", "轻便斜挎包"],
+            colors: ["白色", "浅蓝", "牛仔蓝"],
+            desc: "干净耐看，适合迪士尼全天游玩和拍照。",
+            palette: { outer: "#dfe8f5", top: "#ffffff", bottom: "#6f93bd", shoes: "#ffffff", bag: "#c9aa80", accessory: "米奇帽" }
+          }
+        ]
+      },
+      universal: {
+        female: [
+          {
+            title: "英伦学院风",
+            icon: "🪄",
+            type: "skirt",
+            items: ["白衬衫", "针织马甲", "格纹百褶裙", "乐福鞋", "学院领带", "棕色斜挎包"],
+            colors: ["奶油白", "深棕", "酒红", "格纹"],
+            desc: "适合哈利波特区域，学院感准确。裙长建议在膝上或膝下 5cm 内，避免压身高。",
+            palette: { outer: "#7a4e2d", top: "#fff6e8", bottom: "#7c2f38", shoes: "#3a2418", bag: "#9a6b3d", accessory: "学院领带" }
+          },
+          {
+            title: "甜酷电影女主风",
+            icon: "🎞️",
+            type: "pants",
+            items: ["短款皮衣或牛仔外套", "修身短上衣", "高腰工装裤", "厚底运动鞋", "墨镜", "斜挎包"],
+            colors: ["黑色", "牛仔蓝", "银色"],
+            desc: "适合变形金刚、侏罗纪等区域，行动方便，照片更有力量感。",
+            palette: { outer: "#2d2d2d", top: "#ffffff", bottom: "#5e7fa6", shoes: "#f2f2f2", bag: "#111111", accessory: "墨镜" }
+          }
+        ],
+        male: [
+          {
+            title: "英伦学院少年感",
+            icon: "📚",
+            type: "pants",
+            items: ["白衬衫", "针织马甲", "卡其裤", "乐福鞋", "学院领带", "斜挎包"],
+            colors: ["白色", "棕色", "卡其", "酒红"],
+            desc: "适合哈利波特区域，干净又有主题感。",
+            palette: { outer: "#8a633f", top: "#ffffff", bottom: "#b99062", shoes: "#3b2a1e", bag: "#7a4e2d", accessory: "领带" }
+          }
+        ]
+      },
+      palace: {
+        female: [
+          {
+            title: "新中式温婉风",
+            icon: "🏮",
+            type: "skirt",
+            items: ["盘扣上衣或新中式衬衫", "马面裙或 A 字半裙", "低跟单鞋", "珍珠耳饰", "小手提包"],
+            colors: ["米白", "朱砂红", "墨黑", "浅金"],
+            desc: "适合故宫、古镇和园林。红墙背景下，米白、朱砂红、墨黑都很出片。",
+            palette: { outer: "#f3e6d4", top: "#fff7eb", bottom: "#a83232", shoes: "#2d2018", bag: "#c79a58", accessory: "珍珠耳饰" }
+          },
+          {
+            title: "水墨清冷风",
+            icon: "🖋️",
+            type: "skirt",
+            items: ["浅灰中式外套", "白色内搭", "墨色长裙", "黑色单鞋", "玉色配饰"],
+            colors: ["浅灰", "白色", "墨黑", "玉色"],
+            desc: "适合园林、博物馆和雨天古镇，整体克制高级。",
+            palette: { outer: "#c8c8c8", top: "#ffffff", bottom: "#2b2b2b", shoes: "#111111", bag: "#8ca99a", accessory: "玉色发簪" }
+          }
+        ],
+        male: [
+          {
+            title: "新中式干净风",
+            icon: "🏮",
+            type: "pants",
+            items: ["亚麻衬衫", "直筒长裤", "布鞋或乐福鞋", "简约手表"],
+            colors: ["米白", "深灰", "藏青"],
+            desc: "适合古建场景，干净、克制、有文化氛围。",
+            palette: { outer: "#d9c7ad", top: "#fff7e8", bottom: "#333333", shoes: "#2d2018", bag: "#8a633f", accessory: "手表" }
+          }
+        ]
+      },
+      art: {
+        female: [
+          {
+            title: "高级黑灰极简风",
+            icon: "🖤",
+            type: "pants",
+            items: ["黑色西装外套", "修身内搭", "垂感西装裤", "乐福鞋", "银色耳饰", "小方包"],
+            colors: ["黑色", "炭灰", "银色"],
+            desc: "适合白墙展厅和现代艺术馆。黑灰色系能突出线条，照片质感更高级。",
+            palette: { outer: "#2b2b2b", top: "#111111", bottom: "#3c3c3c", shoes: "#111111", bag: "#777777", accessory: "银色耳饰" }
+          },
+          {
+            title: "复古知识分子风",
+            icon: "📚",
+            type: "skirt",
+            items: ["格纹西装", "白衬衫", "百褶裙或九分裤", "乐福鞋", "皮质斜挎包"],
+            colors: ["咖啡色", "米色", "酒红"],
+            desc: "适合书店、展览和博物馆。复古但不会夸张，很适合拍穿搭细节。",
+            palette: { outer: "#8a5f3e", top: "#fff4e6", bottom: "#6b3e2e", shoes: "#3a2418", bag: "#9b613d", accessory: "复古眼镜" }
+          }
+        ],
+        male: [
+          {
+            title: "黑白极简艺术感",
+            icon: "🎨",
+            type: "pants",
+            items: ["黑色夹克", "白 T 恤", "直筒长裤", "德训鞋", "托特包"],
+            colors: ["黑色", "白色", "灰色"],
+            desc: "适合艺术馆和展览空间，简洁有质感。",
+            palette: { outer: "#222222", top: "#ffffff", bottom: "#555555", shoes: "#eeeeee", bag: "#888888", accessory: "托特包" }
+          }
+        ]
+      },
+      mountain: {
+        female: [
+          {
+            title: "自然松弛户外风",
+            icon: "🌿",
+            type: "pants",
+            items: ["薄防风外套", "白色 T 恤", "工装裤或直筒裤", "运动鞋", "棒球帽", "轻便斜挎包"],
+            colors: ["燕麦色", "橄榄绿", "浅卡其"],
+            desc: "适合公园、湖边、轻徒步。大地色和自然背景融合，实用又出片。",
+            palette: { outer: "#8b9b6f", top: "#f6f0df", bottom: "#b99468", shoes: "#5a5148", bag: "#c89b63", accessory: "棒球帽" }
+          },
+          {
+            title: "户外机能风",
+            icon: "🥾",
+            type: "pants",
+            items: ["冲锋衣", "速干内搭", "束脚裤", "徒步鞋", "鸭舌帽", "双肩包"],
+            colors: ["灰绿", "黑色", "沙色"],
+            desc: "如果步行强度大，这套更安全实用。防风、防滑、方便活动优先。",
+            palette: { outer: "#607466", top: "#202020", bottom: "#3f4642", shoes: "#2a2724", bag: "#8a6f4f", accessory: "鸭舌帽" }
+          }
+        ],
+        male: [
+          {
+            title: "轻户外自然风",
+            icon: "⛰️",
+            type: "pants",
+            items: ["防风外套", "速干 T 恤", "工装裤", "徒步鞋", "双肩包"],
+            colors: ["军绿", "黑色", "卡其"],
+            desc: "适合徒步和自然景区，安全耐走优先。",
+            palette: { outer: "#607466", top: "#ffffff", bottom: "#80694f", shoes: "#333333", bag: "#8a6f4f", accessory: "双肩包" }
+          }
+        ]
+      },
+      music: {
+        female: [
+          {
+            title: "甜酷辣妹风",
+            icon: "🎤",
+            type: "skirt",
+            items: ["短款背心", "牛仔短裙或裤裙", "长靴或厚底靴", "金属项链", "腋下包"],
+            colors: ["黑色", "牛仔蓝", "银色"],
+            desc: "适合音乐节和 livehouse。高腰短下装显腿长，厚底靴比细高跟更稳。",
+            palette: { outer: "#222222", top: "#111111", bottom: "#5f81a8", shoes: "#111111", bag: "#555555", accessory: "金属项链" }
+          }
+        ],
+        male: [
+          {
+            title: "黑色摇滚风",
+            icon: "🎸",
+            type: "pants",
+            items: ["黑色 T 恤", "牛仔夹克", "直筒裤", "马丁靴", "金属项链"],
+            colors: ["黑色", "牛仔蓝", "银色"],
+            desc: "适合演唱会和 livehouse，简单有氛围。",
+            palette: { outer: "#3b506f", top: "#111111", bottom: "#222222", shoes: "#111111", bag: "#555555", accessory: "金属项链" }
+          }
+        ]
+      },
+      city: {
+        female: [
+          {
+            title: "城市轻熟出片",
+            icon: "🏙️",
+            type: "pants",
+            items: ["短外套", "修身内搭", "高腰阔腿裤", "乐福鞋", "腋下包"],
+            colors: ["米白", "黑色", "焦糖色"],
+            desc: "适合城市逛街、餐厅和咖啡馆。上短下长能优化比例。",
+            palette: { outer: "#d9c7ad", top: "#111111", bottom: "#f4eadc", shoes: "#262626", bag: "#b87943", accessory: "腋下包" }
+          },
+          {
+            title: "干净韩系简约",
+            icon: "🤍",
+            type: "pants",
+            items: ["白衬衫", "针织马甲", "直筒牛仔裤", "小白鞋", "帆布包"],
+            colors: ["白色", "浅灰", "牛仔蓝"],
+            desc: "适合大多数城市景点。浅色上衣提亮脸部，整体清爽耐看。",
+            palette: { outer: "#dadde2", top: "#ffffff", bottom: "#6b8db1", shoes: "#f7f7f7", bag: "#cfc1aa", accessory: "帆布包" }
+          },
+          {
+            title: "甜酷休闲风",
+            icon: "✨",
+            type: "skirt",
+            items: ["短款卫衣或夹克", "A 字裙或裤裙", "中筒袜", "运动鞋", "棒球帽"],
+            colors: ["灰色", "粉色", "黑色"],
+            desc: "适合商圈、主题街区和朋友出游。活动方便，同时保留甜酷感。",
+            palette: { outer: "#9c9ca3", top: "#f4b6c2", bottom: "#242424", shoes: "#ffffff", bag: "#1e1e1e", accessory: "棒球帽" }
+          }
+        ],
+        male: [
+          {
+            title: "干净城市休闲",
+            icon: "🏙️",
+            type: "pants",
+            items: ["白色 T 恤", "浅色衬衫", "直筒牛仔裤", "德训鞋", "斜挎包"],
+            colors: ["白色", "浅蓝", "牛仔蓝"],
+            desc: "适合城市日常打卡，清爽不费力。",
+            palette: { outer: "#dfe8f5", top: "#ffffff", bottom: "#6b8db1", shoes: "#f7f7f7", bag: "#cfc1aa", accessory: "斜挎包" }
+          }
+        ]
+      },
+      snow: {
+        female: [
+          {
+            title: "雪地保暖出片风",
+            icon: "❄️",
+            type: "pants",
+            items: ["亮色羽绒服", "高领毛衣", "加绒裤", "雪地靴", "毛线帽", "围巾", "手套"],
+            colors: ["奶白", "浅粉", "冰蓝", "灰色"],
+            desc: "适合冰雪旅行。亮色外套在雪景里更出片，鞋子一定要防滑保暖。",
+            palette: { outer: "#f3e6ef", top: "#fff7eb", bottom: "#9fb3c8", shoes: "#ffffff", bag: "#c6b7a2", accessory: "毛线帽" }
+          }
+        ],
+        male: [
+          {
+            title: "雪地机能保暖风",
+            icon: "❄️",
+            type: "pants",
+            items: ["厚羽绒服", "抓绒内搭", "加绒工装裤", "雪地靴", "毛线帽", "手套"],
+            colors: ["黑色", "军绿", "灰色"],
+            desc: "保暖和防滑优先，适合冰雪大世界和雪乡等低温场景。",
+            palette: { outer: "#303030", top: "#777777", bottom: "#4c5548", shoes: "#111111", bag: "#666666", accessory: "毛线帽" }
+          }
+        ]
+      }
+    };
+
+    function normalizeText(text) {
+      return String(text || "").toLowerCase().replace(/\s+/g, "");
+    }
+
+    function getSeason(dateStr) {
+      const month = new Date(dateStr).getMonth() + 1;
+      if (month >= 3 && month <= 5) return "spring";
+      if (month >= 6 && month <= 8) return "summer";
+      if (month >= 9 && month <= 11) return "autumn";
+      return "winter";
+    }
+
+    function seasonName(season) {
+      return {
+        spring: "春季",
+        summer: "夏季",
+        autumn: "秋季",
+        winter: "冬季"
+      }[season];
+    }
+
+    function matchScene(destination) {
+      const text = normalizeText(destination);
+      for (const scene of sceneProfiles) {
+        if (scene.keywords.some(k => text.includes(normalizeText(k)))) {
+          return scene;
+        }
+      }
+      return sceneProfiles.find(s => s.id === "city");
+    }
+
+    function matchClimate(destination, date, scene) {
+      const text = normalizeText(destination);
+      const season = getSeason(date);
+
+      const city = climateCityMap.find(c =>
+        c.keywords.some(k => text.includes(normalizeText(k)))
+      );
+
+      if (city) {
+        return {
+          ...city.climate[season],
+          source: `${city.name}${seasonName(season)}参考气候`
+        };
+      }
+
+      if (scene.id === "beach") {
+        return {
+          min: season === "winter" ? 18 : 24,
+          max: season === "winter" ? 26 : 32,
+          weather: "多云",
+          humidity: "高",
+          uv: "强",
+          wind: "中",
+          source: `海边${seasonName(season)}参考气候`
+        };
+      }
+
+      if (scene.id === "mountain") {
+        return {
+          min: season === "winter" ? -2 : 10,
+          max: season === "winter" ? 8 : 22,
+          weather: "多云",
+          humidity: "中",
+          uv: "中",
+          wind: "中",
+          source: `山区${seasonName(season)}参考气候`
+        };
+      }
+
+      if (scene.id === "snow") {
+        return {
+          min: -18,
+          max: -6,
+          weather: "雪",
+          humidity: "低",
+          uv: "弱",
+          wind: "中",
+          source: `冰雪旅行参考气候`
+        };
+      }
+
+      const fallback = {
+        spring: { min: 12, max: 22, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+        summer: { min: 24, max: 33, weather: "晴", humidity: "中", uv: "强", wind: "小" },
+        autumn: { min: 14, max: 24, weather: "多云", humidity: "中", uv: "中", wind: "中" },
+        winter: { min: 2, max: 10, weather: "多云", humidity: "低", uv: "弱", wind: "中" }
+      }[season];
+
+      return {
+        ...fallback,
+        source: `城市${seasonName(season)}参考气候`
+      };
+    }
+
+    function getWeatherIcon(weather) {
+      if (weather.includes("晴")) return "☀️";
+      if (weather.includes("云")) return "🌤️";
+      if (weather.includes("阴")) return "☁️";
+      if (weather.includes("雨")) return "🌧️";
+      if (weather.includes("雪")) return "❄️";
+      return "🌤️";
+    }
+
+    function getWeatherTags(climate) {
+      const tags = [];
+      const avg = Math.round((Number(climate.min) + Number(climate.max)) / 2);
+
+      if (climate.max >= 30 || avg >= 28) tags.push("hot");
+      if (climate.max <= 12 || avg <= 10) tags.push("cold");
+      if (climate.weather.includes("雨")) tags.push("rainy");
+      if (climate.weather.includes("雪")) tags.push("snowy");
+      if (climate.uv === "强") tags.push("strongUv");
+      if (climate.humidity === "高") tags.push("humid");
+      if (climate.wind === "大") tags.push("windy");
+      if (tags.length === 0) tags.push("mild");
+
+      return tags;
+    }
+
+    function getBodyAnalysis(height, weight) {
+      const bmi = weight / Math.pow(height / 100, 2);
+      const tips = [];
+
+      if (height < 158) {
+        tips.push("建议提高腰线，优先短外套、高腰裙或高腰裤，裙长避免卡在小腿最粗处。");
+      } else if (height >= 170) {
+        tips.push("适合长线条单品，比如长裙、长裤、长外套，可以增强气场。");
+      } else {
+        tips.push("适合上短下长、同色系延伸，整体比例更协调。");
+      }
+
+      if (bmi < 18.5) {
+        tips.push("身形偏轻，可用针织、泡泡袖、外套叠穿和浅色增加体量感。");
+      } else if (bmi < 24) {
+        tips.push("身材比例较标准，可以根据场景尝试裙装、短外套、高腰裤等出片款。");
+      } else {
+        tips.push("建议选择 A 字裙、直筒裤、V 领、深色下装和有垂感面料，减少横向膨胀。");
+      }
+
+      return {
+        bmi: bmi.toFixed(1),
+        summary: tips.join("")
+      };
+    }
+
+    function adaptPlanByWeather(plan, climate) {
+      const p = JSON.parse(JSON.stringify(plan));
+      const tags = getWeatherTags(climate);
+
+      if (tags.includes("hot")) {
+        p.items = p.items.map(item => {
+          if (item.includes("针织开衫")) return "轻薄防晒开衫";
+          if (item.includes("短外套")) return "轻薄短袖外搭";
+          if (item.includes("西装外套")) return "轻薄短袖西装";
+          if (item.includes("冲锋衣")) return "轻薄防晒衣";
+          return item;
+        });
+        p.weatherTip = "气温偏高，优先选择轻薄、透气、速干面料。";
+      } else if (tags.includes("cold")) {
+        if (!p.items.some(i => i.includes("羽绒") || i.includes("大衣") || i.includes("羊羔毛"))) {
+          p.items.unshift("短款羽绒服或保暖外套");
+        }
+        if (p.type === "skirt" && !p.items.some(i => i.includes("打底袜"))) {
+          p.items.push("加绒打底袜");
+        }
+        p.items.push("围巾或帽子");
+        p.weatherTip = "气温偏低，需要注意保暖，裙装建议搭配加绒打底袜。";
+      } else {
+        p.weatherTip = "当前温度适合按场景正常搭配，可用薄外套增加层次。";
+      }
+
+      if (tags.includes("rainy")) {
+        p.items = p.items.map(item => {
+          if (item.includes("玛丽珍鞋") || item.includes("单鞋") || item.includes("凉鞋")) return "防滑短靴或防水运动鞋";
+          if (item.includes("草帽")) return "轻便雨伞";
+          return item;
+        });
+        if (!p.items.some(i => i.includes("雨伞") || i.includes("防水"))) {
+          p.items.push("轻便雨伞或防水外套");
+        }
+        p.weatherTip += " 有降雨可能，建议避免拖地长裙和易脏浅色鞋。";
+      }
+
+      if (tags.includes("strongUv")) {
+        if (!p.items.some(i => i.includes("防晒") || i.includes("墨镜") || i.includes("帽"))) {
+          p.items.push("墨镜或遮阳帽");
+        }
+        p.weatherTip += " 紫外线较强，建议加入防晒外搭、帽子或墨镜。";
+      }
+
+      if (tags.includes("humid")) {
+        p.weatherTip += " 湿度较高，尽量避免厚重不透气面料。";
+      }
+
+      if (tags.includes("windy")) {
+        p.weatherTip += " 风较大，建议外套选择防风款，裙装避免过轻飘。";
+      }
+
+      return p;
+    }
+
+    function prioritizePlans(plans, style) {
+      const sorted = [...plans];
+
+      if (style === "舒适耐走") {
+        sorted.sort((a, b) => scorePlan(b, ["运动鞋", "小白鞋", "徒步鞋", "裤", "双肩", "防滑"]) - scorePlan(a, ["运动鞋", "小白鞋", "徒步鞋", "裤", "双肩", "防滑"]));
+      }
+
+      if (style === "甜美可爱") {
+        sorted.sort((a, b) => scorePlan(b, ["甜", "公主", "发箍", "蝴蝶结", "粉", "裙"]) - scorePlan(a, ["甜", "公主", "发箍", "蝴蝶结", "粉", "裙"]));
+      }
+
+      if (style === "高级简约") {
+        sorted.sort((a, b) => scorePlan(b, ["高级", "极简", "法式", "黑", "白", "灰"]) - scorePlan(a, ["高级", "极简", "法式", "黑", "白", "灰"]));
+      }
+
+      if (style === "甜酷个性") {
+        sorted.sort((a, b) => scorePlan(b, ["酷", "辣妹", "机能", "黑", "靴", "金属"]) - scorePlan(a, ["酷", "辣妹", "机能", "黑", "靴", "金属"]));
+      }
+
+      if (style === "显瘦显高") {
+        sorted.sort((a, b) => scorePlan(b, ["高腰", "短款", "A 字", "直筒", "垂感"]) - scorePlan(a, ["高腰", "短款", "A 字", "直筒", "垂感"]));
+      }
+
+      return sorted;
+    }
+
+    function scorePlan(plan, words) {
+      const text = `${plan.title}${plan.items.join("")}${plan.colors.join("")}${plan.desc}`;
+      return words.reduce((sum, word) => sum + (text.includes(word) ? 1 : 0), 0);
+    }
+
+    function generateOutfits() {
+      const destination = destinationInput.value.trim();
+      const date = dateInput.value;
+      const gender = genderInput.value;
+      const style = styleInput.value;
+      const height = Number(heightInput.value);
+      const weight = Number(weightInput.value);
+
+      if (!destination) {
+        alert("请填写目的地或景点");
+        return;
+      }
+
+      if (!height || !weight || height < 120 || height > 220 || weight < 30 || weight > 160) {
+        alert("请填写合理的身高和体重");
+        return;
+      }
+
+      const scene = matchScene(destination);
+      const climate = matchClimate(destination, date, scene);
+      const body = getBodyAnalysis(height, weight);
+
+      createPlans({ destination, date, gender, style, height, weight, scene, climate, body });
+    }
+
+    function createPlans(ctx) {
+      const templateGroup = outfitTemplates[ctx.scene.id] || outfitTemplates.city;
+      const basePlans = ctx.gender === "男"
+        ? (templateGroup.male || templateGroup.female)
+        : templateGroup.female;
+
+      let plans = basePlans.map(plan => adaptPlanByWeather(plan, ctx.climate));
+      plans = prioritizePlans(plans, ctx.style);
+
+      currentContext = ctx;
+      currentPlans = plans;
+
+      renderWeather(ctx);
+      renderCards(plans);
+      result.style.display = "none";
+    }
+
+    function renderWeather(ctx) {
+      weatherCard.style.display = "block";
+      manualWeather.style.display = "block";
+
+      weatherTemp.textContent = `${ctx.climate.min}℃ - ${ctx.climate.max}℃`;
+      weatherText.textContent = `${ctx.climate.weather} · 湿度${ctx.climate.humidity} · 紫外线${ctx.climate.uv}`;
+      weatherIcon.textContent = getWeatherIcon(ctx.climate.weather);
+
+      sceneDesc.textContent =
+        `${ctx.climate.source}，已匹配「${ctx.scene.name}」场景。推荐重点：${ctx.scene.priorities.join("、")}。`;
+
+      manualMin.value = ctx.climate.min;
+      manualMax.value = ctx.climate.max;
+      manualWeatherType.value = ctx.climate.weather;
+      manualUv.value = ctx.climate.uv;
+      manualHumidity.value = ctx.climate.humidity;
+      manualWind.value = ctx.climate.wind;
+    }
+
+    function applyManualWeather() {
+      if (!currentContext) return;
+
+      const min = Number(manualMin.value);
+      const max = Number(manualMax.value);
+
+      if (Number.isNaN(min) || Number.isNaN(max) || min > max) {
+        alert("请填写合理的温度范围");
+        return;
+      }
+
+      const climate = {
+        min,
+        max,
+        weather: manualWeatherType.value,
+        uv: manualUv.value,
+        humidity: manualHumidity.value,
+        wind: manualWind.value,
+        source: "已按你调整的天气"
+      };
+
+      createPlans({
+        ...currentContext,
+        climate
+      });
+    }
+
+    function renderCards(plans) {
+      cards.innerHTML = "";
+
+      plans.forEach((plan, index) => {
+        const div = document.createElement("div");
+        div.className = "outfit-card";
+        div.onclick = () => selectPlan(index);
+
+        div.innerHTML = `
+          <div class="card-top">
+            <div class="thumb">${plan.icon}</div>
+            <div class="card-info">
+              <h3>${plan.title}</h3>
+              <p>${plan.desc}</p>
+            </div>
+          </div>
+          <div class="chips">
+            ${plan.colors.map(c => `<span class="chip">${c}</span>`).join("")}
+            ${plan.items.slice(0, 6).map(i => `<span class="chip">${i}</span>`).join("")}
+          </div>
+        `;
+
+        cards.appendChild(div);
+      });
+    }
+
+    function selectPlan(index) {
+      const plan = currentPlans[index];
+
+      document.querySelectorAll(".outfit-card").forEach((card, i) => {
+        card.classList.toggle("active", i === index);
+      });
+
+      result.style.display = "block";
+
+      lookTitle.textContent = plan.title;
+      lookDesc.textContent = `${plan.desc} ${plan.weatherTip}`;
+
+      itemsDetail.innerHTML = `<strong>推荐单品：</strong>${plan.items.join("、")}。`;
+      colorDetail.innerHTML = `<strong>配色建议：</strong>${plan.colors.join("、")}。整体颜色建议控制在 2-4 个主色，避免过杂。`;
+      weatherDetail.innerHTML = `<strong>天气建议：</strong>${currentContext.climate.min}℃-${currentContext.climate.max}℃，${currentContext.climate.weather}，湿度${currentContext.climate.humidity}，紫外线${currentContext.climate.uv}。`;
+      bodyDetail.innerHTML = `<strong>身形建议：</strong>BMI 约 ${currentContext.body.bmi}。${currentContext.body.summary}`;
+
+      applyIllustration(plan, currentContext.scene);
+
+      setTimeout(() => {
+        result.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+
+    function applyIllustration(plan, scene) {
+      document.getElementById("outer").style.background = plan.palette.outer;
+      document.getElementById("top").style.background = plan.palette.top;
+      document.getElementById("skirt").style.background = plan.palette.bottom;
+      document.getElementById("pants").style.background = plan.palette.bottom;
+      document.getElementById("shoeL").style.background = plan.palette.shoes;
+      document.getElementById("shoeR").style.background = plan.palette.shoes;
+      document.getElementById("bag").style.background = plan.palette.bag;
+      document.getElementById("headwear").textContent = plan.palette.accessory || "配饰";
+
+      if (plan.type === "pants") {
+        document.getElementById("pants").style.display = "block";
+        document.getElementById("skirt").style.display = "none";
+      } else {
+        document.getElementById("pants").style.display = "none";
+        document.getElementById("skirt").style.display = "block";
+      }
+
+      document.getElementById("castle").style.display = scene.id === "disney" ? "block" : "none";
+      document.getElementById("wave").style.display = scene.id === "beach" ? "block" : "none";
+      document.getElementById("mountain").style.display = scene.id === "mountain" ? "block" : "none";
+      document.getElementById("building").style.display =
+        ["city", "art", "universal", "palace"].includes(scene.id) ? "block" : "none";
+
+      illustrationLabel.textContent =
+        `${scene.name} · ${plan.title} · ${plan.colors.join(" / ")}`;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      generateOutfits();
+    });
+  </script>
+</body>
+</html>
