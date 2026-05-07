@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>塔罗运势占卜</title>
+  <link rel="stylesheet" href="./assets/style.css" />
+  <link rel="stylesheet" href="./assets/css/tarot.css" />
+</head>
+<body>
+  <main class="tarot-page">
+    <header class="tarot-topbar">
+      <a class="tarot-back" href="./index.html">← 返回首页</a>
+      <div class="tarot-brand">
+        <span class="tarot-brand-icon">🔮</span>
+        <span>塔罗运势占卜</span>
+      </div>
+    </header>
+
+    <section class="tarot-shell">
+      <!-- 页面 1：欢迎引导页 -->
+      <section class="tarot-step active" id="stepWelcome">
+        <div class="tarot-hero">
+          <div class="tarot-moon"></div>
+          <div class="tarot-stars"></div>
+          <p class="tarot-kicker">Tarot Fortune Reading</p>
+          <h1>塔罗运势占卜</h1>
+          <p class="tarot-desc">
+            选择你的问题方向，通过洗牌、切牌、抽牌与翻牌，获得一份完整的塔罗趋势解读。
+          </p>
+          <button class="tarot-btn primary" id="goQuestionBtn">开始占卜</button>
+          <p class="tarot-tip">提示：结果仅供娱乐与自我觉察参考，请理性看待。</p>
+        </div>
+      </section>
+
+      <!-- 页面 2：问题输入页 -->
+      <section class="tarot-step" id="stepQuestion">
+        <div class="tarot-card-panel">
+          <p class="tarot-kicker">Step 1 / 提出问题</p>
+          <h2>写下你想占卜的问题</h2>
+          <p class="tarot-muted">建议问题具体一些，例如：“未来一个月感情会有什么变化？”</p>
+
+          <div class="tarot-form">
+            <label>选择问题类型</label>
+            <div class="tarot-choice-row" id="categoryGroup">
+              <button class="tarot-choice active" data-category="love">感情</button>
+              <button class="tarot-choice" data-category="career">工作</button>
+              <button class="tarot-choice" data-category="study">学业</button>
+            </div>
+
+            <label for="questionInput">占卜问题</label>
+            <textarea id="questionInput" placeholder="请输入你的占卜问题，例如：我和TA接下来会如何发展？"></textarea>
+
+            <label>选择牌阵</label>
+            <div class="tarot-choice-row" id="spreadGroup">
+              <button class="tarot-choice active" data-spread="single">单牌指引</button>
+              <button class="tarot-choice" data-spread="three">三牌圣三角</button>
+            </div>
+
+            <div class="tarot-action-row">
+              <button class="tarot-btn ghost" id="confirmQuestionBtn">确认问题</button>
+              <button class="tarot-btn primary" id="startShuffleBtn" disabled>开始占卜</button>
+            </div>
+
+            <p class="tarot-confirm-text" id="confirmText"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 页面 3：洗牌页 -->
+      <section class="tarot-step" id="stepShuffle">
+        <div class="tarot-card-panel center">
+          <p class="tarot-kicker">Step 2 / 洗牌</p>
+          <h2>正在洗牌</h2>
+          <p class="tarot-muted">请在心中默念你的问题，让注意力集中到牌面之中。</p>
+
+          <div class="shuffle-stage" id="shuffleStage">
+            <div class="shuffle-card card-a"></div>
+            <div class="shuffle-card card-b"></div>
+            <div class="shuffle-card card-c"></div>
+            <div class="shuffle-card card-d"></div>
+            <div class="shuffle-card card-e"></div>
+          </div>
+
+          <button class="tarot-btn primary" id="finishShuffleBtn">洗牌完成，进入切牌</button>
+        </div>
+      </section>
+
+      <!-- 页面 4：切牌页 -->
+      <section class="tarot-step" id="stepCut">
+        <div class="tarot-card-panel center">
+          <p class="tarot-kicker">Step 3 / 切牌</p>
+          <h2>切开牌堆</h2>
+          <p class="tarot-muted">点击牌堆，完成切牌仪式。</p>
+
+          <div class="cut-stage" id="cutDeck">
+            <div class="cut-deck deck-left"></div>
+            <div class="cut-deck deck-right"></div>
+          </div>
+
+          <button class="tarot-btn primary" id="finishCutBtn" disabled>进入抽牌</button>
+        </div>
+      </section>
+
+      <!-- 页面 5：抽牌页 -->
+      <section class="tarot-step" id="stepDraw">
+        <div class="tarot-card-panel center">
+          <p class="tarot-kicker">Step 4 / 抽牌</p>
+          <h2>从牌阵中抽取你的牌</h2>
+          <p class="tarot-muted" id="drawHint">请点击任意牌面，系统将随机为你抽取。</p>
+
+          <div class="fan-stage" id="fanStage"></div>
+
+          <div class="tarot-drawn-list" id="drawnList"></div>
+
+          <button class="tarot-btn primary" id="finishDrawBtn" disabled>布置牌阵</button>
+        </div>
+      </section>
+
+      <!-- 页面 6：布牌阵页 -->
+      <section class="tarot-step" id="stepSpread">
+        <div class="tarot-card-panel center">
+          <p class="tarot-kicker">Step 5 / 布牌阵</p>
+          <h2 id="spreadTitle">布置牌阵</h2>
+          <p class="tarot-muted">牌面仍然隐藏，下一步将逐张翻开。</p>
+
+          <div class="spread-stage" id="spreadStage"></div>
+
+          <button class="tarot-btn primary" id="goRevealBtn">开始翻牌解读</button>
+        </div>
+      </section>
+
+      <!-- 页面 7：翻牌解牌页 -->
+      <section class="tarot-step" id="stepReveal">
+        <div class="tarot-card-panel center">
+          <p class="tarot-kicker">Step 6 / 翻牌解读</p>
+          <h2>点击牌面，查看结果</h2>
+          <p class="tarot-muted">每张牌会显示正位 / 逆位，以及对应牌意解读。</p>
+
+          <div class="reveal-stage" id="revealStage"></div>
+
+          <button class="tarot-btn primary" id="goSummaryBtn" disabled>查看完整总结</button>
+        </div>
+      </section>
+
+      <!-- 页面 8：结果总结页 -->
+      <section class="tarot-step" id="stepSummary">
+        <div class="tarot-card-panel">
+          <p class="tarot-kicker">Step 7 / 完整结果</p>
+          <h2>你的塔罗占卜总结</h2>
+
+          <div class="summary-box" id="summaryBox"></div>
+
+          <div class="tarot-action-row">
+            <button class="tarot-btn ghost" id="restartBtn">再次占卜</button>
+            <button class="tarot-btn primary" id="shareBtn">分享好友</button>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="./assets/js/tarot.js"></script>
+</body>
+</html>
