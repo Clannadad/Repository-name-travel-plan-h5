@@ -5,9 +5,17 @@
   --tarot-pink: #ec4899;
   --tarot-gold: #facc15;
   --tarot-text: #f8f3ff;
-  --tarot-muted: rgba(248, 243, 255, 0.68);
+  --tarot-muted: rgba(248, 243, 255, 0.72);
   --tarot-card: rgba(255, 255, 255, 0.1);
   --tarot-border: rgba(255, 255, 255, 0.16);
+
+  --tarot-btn-height: 52px;
+  --tarot-btn-min-width: 148px;
+  --tarot-btn-radius: 999px;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -15,19 +23,34 @@ body {
 }
 
 .tarot-page {
+  position: relative;
   min-height: 100vh;
   color: var(--tarot-text);
   background:
-    radial-gradient(circle at 20% 10%, rgba(139, 92, 246, 0.32), transparent 30%),
-    radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.22), transparent 32%),
-    linear-gradient(135deg, #0b0614, var(--tarot-bg), var(--tarot-bg-2));
+    radial-gradient(circle at 12% 12%, rgba(250, 204, 21, 0.14), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.24), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(139, 92, 246, 0.25), transparent 34%),
+    linear-gradient(135deg, #08030f 0%, #150820 42%, #2a0b2d 100%);
   overflow-x: hidden;
 }
 
+.tarot-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.55) 1px, transparent 1px),
+    radial-gradient(circle, rgba(250, 204, 21, 0.45) 1px, transparent 1px);
+  background-size: 42px 42px, 88px 88px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
 .tarot-topbar {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 22px 0 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -36,7 +59,8 @@ body {
 .tarot-back {
   color: var(--tarot-muted);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
+  padding: 8px 0;
 }
 
 .tarot-back:hover {
@@ -48,6 +72,11 @@ body {
   align-items: center;
   gap: 8px;
   font-weight: 800;
+  padding: 8px 14px 8px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18);
 }
 
 .tarot-brand-icon {
@@ -56,17 +85,17 @@ body {
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(139, 92, 246, 0.25));
   border: 1px solid var(--tarot-border);
 }
 
 .tarot-shell {
-  width: min(1120px, calc(100% - 32px));
-  min-height: calc(100vh - 90px);
+  width: min(1280px, calc(100% - 40px));
+  min-height: auto;
   margin: 0 auto;
   display: grid;
   place-items: center;
-  padding-bottom: 56px;
+  padding: 24px 0 72px;
 }
 
 .tarot-step {
@@ -84,6 +113,7 @@ body {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -93,14 +123,18 @@ body {
 .tarot-hero,
 .tarot-card-panel {
   position: relative;
-  width: min(860px, 100%);
+  width: min(980px, 100%);
   margin: 0 auto;
-  padding: 52px;
-  border-radius: 32px;
+  padding: clamp(30px, 4vw, 58px);
+  border-radius: 34px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
-  border: 1px solid var(--tarot-border);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.055)),
+    radial-gradient(circle at 15% 15%, rgba(250, 204, 21, 0.12), transparent 26%),
+    radial-gradient(circle at 85% 10%, rgba(236, 72, 153, 0.14), transparent 30%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 36px 100px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px);
   overflow: hidden;
 }
@@ -110,7 +144,7 @@ body {
 }
 
 .tarot-hero {
-  min-height: 540px;
+  min-height: min(620px, calc(100vh - 150px));
   text-align: center;
   display: grid;
   place-items: center;
@@ -175,6 +209,7 @@ body {
   z-index: 1;
   margin: 0 0 12px;
   font-size: clamp(26px, 4vw, 40px);
+  letter-spacing: -0.04em;
 }
 
 .tarot-desc {
@@ -199,31 +234,56 @@ body {
   margin-top: 18px;
 }
 
+/* 统一按钮尺寸规范 */
 .tarot-btn {
   position: relative;
   z-index: 1;
+  min-width: var(--tarot-btn-min-width);
+  min-height: var(--tarot-btn-height);
+  height: var(--tarot-btn-height);
+  padding: 0 28px;
   border: 0;
-  border-radius: 999px;
-  padding: 13px 24px;
-  font-weight: 800;
+  border-radius: var(--tarot-btn-radius);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1;
   cursor: pointer;
   transition: 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .tarot-btn.primary {
-  color: #1b1030;
-  background: linear-gradient(135deg, var(--tarot-gold), #fef3c7);
-  box-shadow: 0 12px 30px rgba(250, 204, 21, 0.25);
+  color: #24120a;
+  background: linear-gradient(135deg, #facc15 0%, #fde68a 48%, #fff7cc 100%);
+  box-shadow:
+    0 16px 36px rgba(250, 204, 21, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .tarot-btn.ghost {
-  color: var(--tarot-text);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--tarot-border);
+  color: rgba(248, 243, 255, 0.92);
+  background: rgba(255, 255, 255, 0.095);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .tarot-btn:hover {
   transform: translateY(-2px);
+}
+
+.tarot-btn.primary:hover {
+  transform: translateY(-3px) scale(1.015);
+  box-shadow:
+    0 22px 48px rgba(250, 204, 21, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.tarot-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .tarot-btn:disabled {
@@ -241,7 +301,7 @@ body {
 }
 
 .tarot-form label {
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .tarot-choice-row {
@@ -251,30 +311,34 @@ body {
 }
 
 .tarot-choice {
+  min-height: 42px;
+  padding: 0 18px;
   color: var(--tarot-text);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--tarot-border);
   border-radius: 999px;
-  padding: 10px 16px;
   cursor: pointer;
   transition: 0.2s ease;
+  font-weight: 800;
 }
 
 .tarot-choice.active {
   color: #1b1030;
-  background: var(--tarot-gold);
+  background: linear-gradient(135deg, #facc15, #fde68a);
   border-color: transparent;
-  font-weight: 800;
+  font-weight: 900;
+  box-shadow: 0 10px 24px rgba(250, 204, 21, 0.18);
 }
 
 #questionInput {
-  min-height: 120px;
+  min-height: 132px;
   resize: vertical;
-  border: 1px solid var(--tarot-border);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 20px;
   padding: 16px;
   color: var(--tarot-text);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.085);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   outline: none;
   font-size: 15px;
   line-height: 1.7;
@@ -287,7 +351,7 @@ body {
 .tarot-action-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
   margin-top: 12px;
 }
 
@@ -296,11 +360,40 @@ body {
   color: var(--tarot-gold);
 }
 
+@media (min-width: 980px) {
+  #stepQuestion .tarot-card-panel {
+    width: min(1040px, 100%);
+  }
+
+  #stepQuestion .tarot-form {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 28px;
+  }
+
+  #stepQuestion .tarot-form label:first-child,
+  #stepQuestion #categoryGroup,
+  #stepQuestion .tarot-form label[for="questionInput"],
+  #stepQuestion #questionInput,
+  #stepQuestion .tarot-action-row,
+  #stepQuestion .tarot-confirm-text {
+    grid-column: 1 / -1;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .category-grid .tarot-choice {
+    width: 100%;
+  }
+}
+
 /* 洗牌动画 */
 .shuffle-stage {
   position: relative;
   z-index: 1;
-  height: 250px;
+  height: 230px;
   margin: 36px auto;
 }
 
@@ -313,9 +406,10 @@ body {
   height: 148px;
   border-radius: 14px;
   background:
-    linear-gradient(135deg, rgba(250, 204, 21, 0.8), rgba(139, 92, 246, 0.9)),
-    repeating-linear-gradient(45deg, transparent 0 8px, rgba(255, 255, 255, 0.18) 8px 10px);
-  border: 2px solid rgba(255, 255, 255, 0.55);
+    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.3), transparent 22%),
+    linear-gradient(135deg, rgba(250, 204, 21, 0.92), rgba(139, 92, 246, 0.95)),
+    repeating-linear-gradient(45deg, transparent 0 9px, rgba(255, 255, 255, 0.18) 9px 11px);
+  border: 2px solid rgba(255, 255, 255, 0.68);
   box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
 }
 
@@ -327,22 +421,40 @@ body {
   animation: shuffleMove 1.25s infinite ease-in-out;
 }
 
-.card-a { animation-delay: 0s; }
-.card-b { animation-delay: 0.12s; }
-.card-c { animation-delay: 0.24s; }
-.card-d { animation-delay: 0.36s; }
-.card-e { animation-delay: 0.48s; }
+.card-a {
+  animation-delay: 0s;
+}
+
+.card-b {
+  animation-delay: 0.12s;
+}
+
+.card-c {
+  animation-delay: 0.24s;
+}
+
+.card-d {
+  animation-delay: 0.36s;
+}
+
+.card-e {
+  animation-delay: 0.48s;
+}
 
 @keyframes shuffleMove {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(-50%) rotate(0deg);
   }
+
   25% {
     transform: translateX(calc(-50% - 95px)) rotate(-18deg);
   }
+
   50% {
     transform: translateX(calc(-50% + 95px)) rotate(18deg);
   }
+
   75% {
     transform: translateX(-50%) rotate(4deg);
   }
@@ -378,7 +490,8 @@ body {
 .fan-stage {
   position: relative;
   z-index: 1;
-  height: 300px;
+  height: 270px;
+  max-width: 760px;
   margin: 20px auto 12px;
 }
 
@@ -386,6 +499,8 @@ body {
   position: absolute;
   left: 50%;
   top: 80px;
+  width: 86px;
+  height: 136px;
   transform-origin: bottom center;
   cursor: pointer;
   transition: 0.22s ease;
@@ -405,7 +520,14 @@ body {
   gap: 10px;
   min-height: 32px;
   color: var(--tarot-gold);
-  font-weight: 800;
+  font-weight: 900;
+}
+
+.tarot-drawn-list span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.1);
+  border: 1px solid rgba(250, 204, 21, 0.24);
 }
 
 /* 牌阵 */
@@ -439,17 +561,29 @@ body {
 }
 
 /* 翻牌 */
+.reveal-stage {
+  align-items: flex-start;
+  gap: 26px;
+  min-height: auto;
+}
+
+.reveal-slot {
+  width: min(340px, 100%);
+}
+
 .reveal-card {
-  width: 150px;
-  height: 236px;
+  width: 142px;
+  height: 224px;
   perspective: 1000px;
   cursor: pointer;
+  margin: 0 auto;
 }
 
 .reveal-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 18px;
   transition: transform 0.75s;
   transform-style: preserve-3d;
 }
@@ -466,7 +600,6 @@ body {
   display: grid;
   place-items: center;
   padding: 12px;
-  box-sizing: border-box;
 }
 
 .reveal-card-back {
@@ -478,347 +611,33 @@ body {
 
 .reveal-card-front {
   transform: rotateY(180deg);
-  background: linear-gradient(160deg, #fff7ed, #f5e8ff);
-  color: #2e1065;
-  border: 2px solid rgba(250, 204, 21, 0.8);
-}
-
-.reveal-card-front.reversed {
-  transform: rotateY(180deg) rotate(180deg);
-}
-
-.card-symbol {
-  font-size: 44px;
-  margin-bottom: 8px;
-}
-
-.card-name {
-  font-weight: 900;
-  text-align: center;
-}
-
-.card-orientation {
-  margin-top: 6px;
-  font-size: 13px;
-  color: #7e22ce;
-  font-weight: 800;
-}
-
-.reveal-reading {
-  width: min(320px, 100%);
-  margin: 14px auto 0;
-  padding: 14px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid var(--tarot-border);
-  color: var(--tarot-muted);
-  text-align: left;
-  line-height: 1.75;
-  font-size: 14px;
-}
-
-/* 总结 */
-.summary-box {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.summary-section {
-  padding: 18px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.09);
-  border: 1px solid var(--tarot-border);
-}
-
-.summary-section h3 {
-  margin: 0 0 10px;
-  color: var(--tarot-gold);
-}
-
-.summary-section p {
-  margin: 0;
-  color: var(--tarot-muted);
-  line-height: 1.8;
-}
-
-.summary-card-list {
-  display: grid;
-  gap: 12px;
-}
-
-@media (max-width: 720px) {
-  .tarot-hero,
-  .tarot-card-panel {
-    padding: 32px 20px;
-    border-radius: 24px;
-  }
-
-  .tarot-topbar {
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .fan-stage {
-    height: 260px;
-    transform: scale(0.82);
-    transform-origin: top center;
-  }
-
-  .reveal-card {
-    width: 128px;
-    height: 202px;
-  }
-
-  .spread-stage,
-  .reveal-stage {
-    gap: 16px;
-  }
-}
-/* ===== Tarot UI Upgrade ===== */
-
-.tarot-page {
-  position: relative;
   background:
-    radial-gradient(circle at 12% 12%, rgba(250, 204, 21, 0.14), transparent 24%),
-    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, 0.24), transparent 30%),
-    radial-gradient(circle at 50% 90%, rgba(139, 92, 246, 0.25), transparent 34%),
-    linear-gradient(135deg, #08030f 0%, #150820 42%, #2a0b2d 100%);
-}
-
-.tarot-page::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.22;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px),
-    radial-gradient(circle, rgba(250,204,21,0.45) 1px, transparent 1px);
-  background-size: 42px 42px, 88px 88px;
-  mask-image: linear-gradient(to bottom, black, transparent 92%);
-}
-
-.tarot-topbar {
-  width: min(1280px, calc(100% - 40px));
-  padding: 22px 0 12px;
-}
-
-.tarot-back {
-  font-size: 15px;
-  padding: 8px 0;
-}
-
-.tarot-brand {
-  padding: 8px 14px 8px 8px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.18);
-}
-
-.tarot-brand-icon {
-  background: linear-gradient(135deg, rgba(250,204,21,0.25), rgba(139,92,246,0.25));
-}
-
-.tarot-shell {
-  width: min(1280px, calc(100% - 40px));
-  min-height: auto;
-  padding: 24px 0 64px;
-}
-
-.tarot-hero,
-.tarot-card-panel {
-  width: min(980px, 100%);
-  padding: clamp(30px, 4vw, 58px);
-  border-radius: 34px;
-  background:
-    linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.055)),
-    radial-gradient(circle at 15% 15%, rgba(250,204,21,0.12), transparent 26%),
-    radial-gradient(circle at 85% 10%, rgba(236,72,153,0.14), transparent 30%);
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow:
-    0 36px 100px rgba(0,0,0,0.42),
-    inset 0 1px 0 rgba(255,255,255,0.12);
-}
-
-.tarot-hero {
-  min-height: min(620px, calc(100vh - 150px));
-}
-
-.tarot-card-panel h2 {
-  letter-spacing: -0.04em;
-}
-
-.tarot-muted,
-.tarot-desc,
-.tarot-tip {
-  color: rgba(248,243,255,0.74);
-}
-
-.tarot-btn {
-  min-height: 50px;
-  padding: 0 28px;
-  font-size: 16px;
-  letter-spacing: 0.02em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.tarot-btn.primary {
-  color: #24120a;
-  background:
-    linear-gradient(135deg, #facc15 0%, #fde68a 48%, #fff7cc 100%);
-  box-shadow:
-    0 16px 36px rgba(250,204,21,0.28),
-    inset 0 1px 0 rgba(255,255,255,0.55);
-}
-
-.tarot-btn.primary:hover {
-  transform: translateY(-3px) scale(1.015);
-  box-shadow:
-    0 22px 48px rgba(250,204,21,0.38),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-}
-
-.tarot-btn.ghost {
-  color: rgba(248,243,255,0.92);
-  background: rgba(255,255,255,0.095);
-  border: 1px solid rgba(255,255,255,0.18);
-}
-
-.tarot-btn.ghost:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-.tarot-choice {
-  min-height: 40px;
-  padding: 0 18px;
-}
-
-.tarot-choice.active {
-  background: linear-gradient(135deg, #facc15, #fde68a);
-  box-shadow: 0 10px 24px rgba(250,204,21,0.18);
-}
-
-#questionInput {
-  min-height: 132px;
-  background: rgba(255,255,255,0.085);
-  border-color: rgba(255,255,255,0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
-
-.tarot-action-row {
-  gap: 14px;
-}
-
-/* 桌面端问题页更像卡片布局 */
-@media (min-width: 980px) {
-  #stepQuestion .tarot-card-panel {
-    width: min(1040px, 100%);
-  }
-
-  #stepQuestion .tarot-form {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 28px;
-  }
-
-  #stepQuestion .tarot-form label[for="questionInput"],
-  #stepQuestion #questionInput,
-  #stepQuestion .tarot-action-row,
-  #stepQuestion .tarot-confirm-text {
-    grid-column: 1 / -1;
-  }
-}
-
-/* 洗牌更有仪式感 */
-.shuffle-stage {
-  height: 230px;
-}
-
-.shuffle-card,
-.cut-deck,
-.fan-card,
-.spread-card-back {
-  background:
-    radial-gradient(circle at 50% 28%, rgba(255,255,255,0.3), transparent 22%),
-    linear-gradient(135deg, rgba(250,204,21,0.92), rgba(139,92,246,0.95)),
-    repeating-linear-gradient(45deg, transparent 0 9px, rgba(255,255,255,0.18) 9px 11px);
-  border: 2px solid rgba(255,255,255,0.68);
-}
-
-/* 抽牌扇形 */
-.fan-stage {
-  height: 270px;
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.fan-card {
-  width: 86px;
-  height: 136px;
-}
-
-.tarot-drawn-list span {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(250,204,21,0.1);
-  border: 1px solid rgba(250,204,21,0.24);
-}
-
-/* 翻牌区 */
-.reveal-stage {
-  align-items: flex-start;
-  gap: 26px;
-  min-height: auto;
-}
-
-.reveal-slot {
-  width: min(340px, 100%);
-}
-
-.reveal-card {
-  width: 142px;
-  height: 224px;
-  margin: 0 auto;
-}
-
-.reveal-card-inner {
-  border-radius: 18px;
-}
-
-.reveal-card-front {
-  transform: rotateY(180deg);
-  background:
-    radial-gradient(circle at 50% 18%, rgba(250,204,21,0.2), transparent 30%),
+    radial-gradient(circle at 50% 18%, rgba(250, 204, 21, 0.2), transparent 30%),
     linear-gradient(160deg, #fff7ed, #f3e8ff 70%, #eadcff);
   color: #251051;
-  border: 2px solid rgba(250,204,21,0.85);
+  border: 2px solid rgba(250, 204, 21, 0.85);
   box-shadow:
-    0 18px 44px rgba(0,0,0,0.28),
-    inset 0 0 0 5px rgba(255,255,255,0.58);
+    0 18px 44px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 5px rgba(255, 255, 255, 0.58);
 }
 
-/* 关键：逆位不再把文字倒过来 */
 .reveal-card-front.reversed {
   transform: rotateY(180deg);
-  border-color: rgba(236,72,153,0.9);
+  border-color: rgba(236, 72, 153, 0.9);
   background:
-    radial-gradient(circle at 50% 18%, rgba(236,72,153,0.18), transparent 30%),
+    radial-gradient(circle at 50% 18%, rgba(236, 72, 153, 0.18), transparent 30%),
     linear-gradient(160deg, #fff1f8, #f3e8ff 70%, #e9d5ff);
 }
 
 .card-symbol {
   font-size: 46px;
   line-height: 1;
+  margin-bottom: 8px;
 }
 
 .card-name {
+  font-weight: 900;
+  text-align: center;
   font-size: 22px;
   margin-top: 8px;
 }
@@ -828,23 +647,27 @@ body {
   margin-top: 12px;
   padding: 5px 11px;
   border-radius: 999px;
-  background: rgba(126,34,206,0.1);
+  background: rgba(126, 34, 206, 0.1);
+  font-size: 13px;
+  color: #7e22ce;
+  font-weight: 900;
 }
 
 .reveal-card-front.reversed .card-orientation {
   color: #be185d;
-  background: rgba(236,72,153,0.13);
+  background: rgba(236, 72, 153, 0.13);
 }
 
 .reveal-reading {
   width: 100%;
-  box-sizing: border-box;
   margin-top: 16px;
   padding: 18px;
   border-radius: 22px;
-  background: rgba(255,255,255,0.105);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: rgba(248,243,255,0.76);
+  background: rgba(255, 255, 255, 0.105);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(248, 243, 255, 0.76);
+  text-align: left;
+  line-height: 1.75;
   font-size: 14.5px;
 }
 
@@ -855,13 +678,17 @@ body {
   margin-bottom: 8px;
 }
 
-/* 总结页 */
+/* 总结 */
 #stepSummary .tarot-card-panel {
   width: min(1180px, 100%);
 }
 
 .summary-box {
+  position: relative;
+  z-index: 1;
+  display: grid;
   gap: 18px;
+  margin-top: 24px;
 }
 
 .summary-hero {
@@ -871,19 +698,24 @@ body {
 }
 
 .summary-section {
+  padding: 18px;
+  border-radius: 20px;
   background:
-    linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
-  border: 1px solid rgba(255,255,255,0.16);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .summary-section h3 {
+  margin: 0 0 10px;
   color: #facc15;
   font-size: 18px;
 }
 
 .summary-section p {
-  color: rgba(248,243,255,0.76);
+  margin: 0;
+  color: rgba(248, 243, 255, 0.76);
+  line-height: 1.8;
 }
 
 .summary-card-list {
@@ -905,7 +737,7 @@ body {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: rgba(250,204,21,0.08);
+  background: rgba(250, 204, 21, 0.08);
 }
 
 .summary-card-head {
@@ -925,12 +757,12 @@ body {
   font-size: 26px;
   background: linear-gradient(160deg, #fff7ed, #f3e8ff);
   color: #2e1065;
-  border: 2px solid rgba(250,204,21,0.8);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+  border: 2px solid rgba(250, 204, 21, 0.8);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
 }
 
 .summary-mini-card.reversed {
-  border-color: rgba(236,72,153,0.85);
+  border-color: rgba(236, 72, 153, 0.85);
 }
 
 .summary-card-title {
@@ -941,7 +773,7 @@ body {
 
 .summary-card-subtitle {
   margin-top: 5px;
-  color: rgba(248,243,255,0.6);
+  color: rgba(248, 243, 255, 0.6);
   font-size: 13px;
 }
 
@@ -982,19 +814,22 @@ body {
   justify-content: center;
 }
 
-/* 分享图生成提示 */
+/* Toast / 弹窗位置优化：放顶部安全区，不遮挡正文 */
 .tarot-toast {
   position: fixed;
   left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
+  top: max(18px, env(safe-area-inset-top));
+  bottom: auto;
+  transform: translate(-50%, -12px);
   z-index: 9999;
+  max-width: min(92vw, 520px);
   padding: 12px 18px;
   border-radius: 999px;
   color: #21120a;
   background: linear-gradient(135deg, #facc15, #fff7cc);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.32);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
   font-weight: 900;
+  text-align: center;
   opacity: 0;
   pointer-events: none;
   transition: 0.25s ease;
@@ -1002,7 +837,20 @@ body {
 
 .tarot-toast.show {
   opacity: 1;
-  bottom: 40px;
+  transform: translate(-50%, 0);
+}
+
+/* 如果后续有弹窗，也默认避开正文居中偏上 */
+.tarot-modal,
+.tarot-dialog {
+  position: fixed;
+  left: 50%;
+  top: max(88px, calc(env(safe-area-inset-top) + 72px));
+  transform: translateX(-50%);
+  z-index: 9998;
+  max-width: min(92vw, 560px);
+  max-height: calc(100vh - 140px);
+  overflow: auto;
 }
 
 /* 移动端优化 */
@@ -1010,6 +858,8 @@ body {
   .tarot-topbar {
     width: min(100% - 28px, 520px);
     padding: 14px 0 8px;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .tarot-brand {
@@ -1024,13 +874,12 @@ body {
 
   .tarot-shell {
     width: min(100% - 24px, 520px);
-    padding: 14px 0 34px;
+    padding: 14px 0 42px;
   }
 
   .tarot-hero,
   .tarot-card-panel {
     width: 100%;
-    box-sizing: border-box;
     padding: 26px 18px;
     border-radius: 26px;
   }
@@ -1064,7 +913,9 @@ body {
 
   .tarot-btn {
     width: 100%;
+    min-width: 0;
     min-height: 52px;
+    height: 52px;
     font-size: 16px;
   }
 
@@ -1155,5 +1006,11 @@ body {
     width: 50px;
     height: 74px;
     font-size: 23px;
+  }
+
+  .tarot-toast {
+    top: max(12px, env(safe-area-inset-top));
+    width: calc(100vw - 28px);
+    border-radius: 18px;
   }
 }

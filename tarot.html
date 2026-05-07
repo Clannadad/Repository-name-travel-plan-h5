@@ -31,7 +31,7 @@
           <p class="tarot-desc">
             选择你的问题方向，通过洗牌、切牌、抽牌与翻牌，获得一份完整的塔罗趋势解读。
           </p>
-          <button class="tarot-btn primary" id="goQuestionBtn">开始占卜</button>
+          <button class="tarot-btn primary" id="goQuestionBtn" type="button">开始占卜</button>
           <p class="tarot-tip">提示：结果仅供娱乐与自我觉察参考，请理性看待。</p>
         </div>
       </section>
@@ -41,28 +41,34 @@
         <div class="tarot-card-panel">
           <p class="tarot-kicker">Step 1 / 提出问题</p>
           <h2>写下你想占卜的问题</h2>
-          <p class="tarot-muted">建议问题具体一些，例如：“未来一个月感情会有什么变化？”</p>
+          <p class="tarot-muted">建议问题具体一些，例如：“未来一个月我在财运上需要注意什么？”</p>
 
           <div class="tarot-form">
             <label>选择问题类型</label>
-            <div class="tarot-choice-row" id="categoryGroup">
-              <button class="tarot-choice active" data-category="love">感情</button>
-              <button class="tarot-choice" data-category="career">工作</button>
-              <button class="tarot-choice" data-category="study">学业</button>
+            <div class="tarot-choice-row category-grid" id="categoryGroup">
+              <button class="tarot-choice active" type="button" data-category="love">爱情感情</button>
+              <button class="tarot-choice" type="button" data-category="career">工作事业</button>
+              <button class="tarot-choice" type="button" data-category="study">学业考试</button>
+              <button class="tarot-choice" type="button" data-category="wealth">财运金钱</button>
+              <button class="tarot-choice" type="button" data-category="relationship">人际关系</button>
+              <button class="tarot-choice" type="button" data-category="growth">个人成长</button>
+              <button class="tarot-choice" type="button" data-category="decision">选择决策</button>
+              <button class="tarot-choice" type="button" data-category="fortune">近期运势</button>
+              <button class="tarot-choice" type="button" data-category="health">身心状态</button>
             </div>
 
             <label for="questionInput">占卜问题</label>
-            <textarea id="questionInput" placeholder="请输入你的占卜问题，例如：我和TA接下来会如何发展？"></textarea>
+            <textarea id="questionInput" placeholder="请输入你的占卜问题，例如：我接下来一个月的财运趋势如何？"></textarea>
 
             <label>选择牌阵</label>
             <div class="tarot-choice-row" id="spreadGroup">
-              <button class="tarot-choice active" data-spread="single">单牌指引</button>
-              <button class="tarot-choice" data-spread="three">三牌圣三角</button>
+              <button class="tarot-choice active" type="button" data-spread="single">单牌指引</button>
+              <button class="tarot-choice" type="button" data-spread="three">三牌圣三角</button>
             </div>
 
             <div class="tarot-action-row">
-              <button class="tarot-btn ghost" id="confirmQuestionBtn">确认问题</button>
-              <button class="tarot-btn primary" id="startShuffleBtn" disabled>开始占卜</button>
+              <button class="tarot-btn ghost" id="confirmQuestionBtn" type="button">确认问题</button>
+              <button class="tarot-btn primary" id="startShuffleBtn" type="button" disabled>开始占卜</button>
             </div>
 
             <p class="tarot-confirm-text" id="confirmText"></p>
@@ -85,7 +91,7 @@
             <div class="shuffle-card card-e"></div>
           </div>
 
-          <button class="tarot-btn primary" id="finishShuffleBtn">洗牌完成，进入切牌</button>
+          <button class="tarot-btn primary" id="finishShuffleBtn" type="button">洗牌完成，进入切牌</button>
         </div>
       </section>
 
@@ -101,7 +107,7 @@
             <div class="cut-deck deck-right"></div>
           </div>
 
-          <button class="tarot-btn primary" id="finishCutBtn" disabled>进入抽牌</button>
+          <button class="tarot-btn primary" id="finishCutBtn" type="button" disabled>进入抽牌</button>
         </div>
       </section>
 
@@ -116,7 +122,7 @@
 
           <div class="tarot-drawn-list" id="drawnList"></div>
 
-          <button class="tarot-btn primary" id="finishDrawBtn" disabled>布置牌阵</button>
+          <button class="tarot-btn primary" id="finishDrawBtn" type="button" disabled>布置牌阵</button>
         </div>
       </section>
 
@@ -129,7 +135,7 @@
 
           <div class="spread-stage" id="spreadStage"></div>
 
-          <button class="tarot-btn primary" id="goRevealBtn">开始翻牌解读</button>
+          <button class="tarot-btn primary" id="goRevealBtn" type="button">开始翻牌解读</button>
         </div>
       </section>
 
@@ -142,7 +148,7 @@
 
           <div class="reveal-stage" id="revealStage"></div>
 
-          <button class="tarot-btn primary" id="goSummaryBtn" disabled>查看完整总结</button>
+          <button class="tarot-btn primary" id="goSummaryBtn" type="button" disabled>查看完整总结</button>
         </div>
       </section>
 
@@ -153,11 +159,13 @@
           <h2>你的塔罗占卜总结</h2>
 
           <div class="summary-box" id="summaryBox"></div>
+
           <div class="tarot-action-row summary-actions">
             <button class="tarot-btn ghost" id="restartBtn" type="button">重新占卜</button>
             <button class="tarot-btn ghost" id="copyShareBtn" type="button">复制结果</button>
             <button class="tarot-btn primary" id="createShareImageBtn" type="button">生成分享图</button>
           </div>
+        </div>
       </section>
     </section>
   </main>
