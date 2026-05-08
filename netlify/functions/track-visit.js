@@ -53,43 +53,10 @@ exports.handler = async function (event) {
 
     const body = event.body ? JSON.parse(event.body) : {};
 
-    const ip =
-      event.headers["x-nf-client-connection-ip"] ||
-      event.headers["client-ip"] ||
-      event.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-      event.headers["x-real-ip"] ||
-      "";
-
-    const userAgent =
-      body.user_agent ||
-      event.headers["user-agent"] ||
-      "";
-
-    const parsed = parseUserAgent(userAgent);
-
     const record = {
       page_url: body.page_url || "",
       page_path: body.page_path || "",
       page_title: body.page_title || "",
-      referrer: body.referrer || "",
-
-      visitor_id: body.visitor_id || "",
-      session_id: body.session_id || "",
-
-      ip,
-      user_agent: userAgent,
-
-      browser: body.browser || parsed.browser,
-      os: body.os || parsed.os,
-      device_type: body.device_type || parsed.device_type,
-      device_vendor: body.device_vendor || "",
-      device_model: body.device_model || "",
-
-      screen_width: Number(body.screen_width) || null,
-      screen_height: Number(body.screen_height) || null,
-      language: body.language || "",
-
-      source: "website",
     };
 
     const res = await fetch(`${supabaseUrl}/rest/v1/visit_logs`, {
@@ -98,21 +65,22 @@ exports.handler = async function (event) {
         apikey: supabaseServiceRoleKey,
         Authorization: `Bearer ${supabaseServiceRoleKey}`,
         "Content-Type": "application/json",
-        Prefer: "return=minimal",
+        Prefer: "return=representation",
       },
       body: JSON.stringify(record),
     });
 
-    if (!res.ok) {
-      const errorText = await res.text();
+    const text = await res.text();
 
+    if (!res.ok) {
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({
           ok: false,
           message: "Failed to insert visit log",
-          error: errorText,
+          status: res.status,
+          error: text,
         }),
       };
     }
@@ -123,6 +91,7 @@ exports.handler = async function (event) {
       body: JSON.stringify({
         ok: true,
         message: "Visit logged",
+        data: text ? JSON.parse(text) : null,
       }),
     };
   } catch (error) {
@@ -136,47 +105,3 @@ exports.handler = async function (event) {
     };
   }
 };
-
-function parseUserAgent(ua) {
-  ua = ua || "";
-
-  let browser = "Unknown";
-  let os = "Unknown";
-  let device_type = "Desktop";
-
-  if (/Edg\//i.test(ua)) {
-    browser = "Edge";
-  } else if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) {
-    browser = "Chrome";
-  } else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) {
-    browser = "Safari";
-  } else if (/Firefox\//i.test(ua)) {
-    browser = "Firefox";
-  } else if (/MSIE|Trident/i.test(ua)) {
-    browser = "Internet Explorer";
-  }
-
-  if (/Windows NT/i.test(ua)) {
-    os = "Windows";
-  } else if (/Mac OS X/i.test(ua) && !/iPhone|iPad/i.test(ua)) {
-    os = "macOS";
-  } else if (/Android/i.test(ua)) {
-    os = "Android";
-  } else if (/iPhone|iPad|iPod/i.test(ua)) {
-    os = "iOS";
-  } else if (/Linux/i.test(ua)) {
-    os = "Linux";
-  }
-
-  if (/iPad|Tablet/i.test(ua)) {
-    device_type = "Tablet";
-  } else if (/Mobile|Android|iPhone|iPod/i.test(ua)) {
-    device_type = "Mobile";
-  }
-
-  return {
-    browser,
-    os,
-    device_type,
-  };
-}
