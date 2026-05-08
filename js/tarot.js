@@ -970,7 +970,79 @@ function createShareImage() {
     window.open(imageUrl, "_blank");
   }
 }
+function setTarotChoiceActive(groupId, dataKey, value) {
+  const group = document.getElementById(groupId);
+  if (!group || !value) return false;
 
+  let matched = false;
+
+  group.querySelectorAll(".tarot-choice").forEach(btn => {
+    const isActive = btn.dataset[dataKey] === value;
+    btn.classList.toggle("active", isActive);
+
+    if (isActive) {
+      matched = true;
+    }
+  });
+
+  return matched;
+}
+
+function applyTarotUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  const from = params.get("from");
+  const bbti = params.get("bbti") || "";
+  const category = params.get("category");
+  const spread = params.get("spread");
+  const question = params.get("q") || params.get("question") || "";
+
+  const hasBbtiParams = from === "bbti" || Boolean(bbti) || Boolean(question);
+
+  if (!hasBbtiParams) return;
+
+  if (category && categoryMap[category]) {
+    tarotState.category = category;
+    setTarotChoiceActive("categoryGroup", "category", category);
+  }
+
+  if (spread && spreadMap[spread]) {
+    tarotState.spread = spread;
+    setTarotChoiceActive("spreadGroup", "spread", spread);
+  }
+
+  if (question) {
+    tarotState.question = question;
+    tarotState.confirmed = true;
+
+    const questionInput = document.getElementById("questionInput");
+    const confirmText = document.getElementById("confirmText");
+    const startShuffleBtn = document.getElementById("startShuffleBtn");
+
+    if (questionInput) {
+      questionInput.value = question;
+    }
+
+    if (confirmText) {
+      const categoryName = categoryMap[tarotState.category] || "近期运势";
+      const spreadName = spreadMap[tarotState.spread]?.name || "单牌指引";
+
+      confirmText.textContent = bbti
+        ? `已根据你的 BBTI「${bbti}」生成推荐问题：${categoryName} / ${spreadName}`
+        : `已根据你的 BBTI 结果生成推荐问题：${categoryName} / ${spreadName}`;
+    }
+
+    if (startShuffleBtn) {
+      startShuffleBtn.disabled = false;
+    }
+
+    showStep("stepQuestion");
+
+    setTimeout(() => {
+      showToast("已根据你的 BBTI 结果生成推荐问题。");
+    }, 300);
+  }
+}
 function initTarot() {
   bindChoices("categoryGroup", "category");
   bindChoices("spreadGroup", "spread");
@@ -1050,6 +1122,8 @@ function initTarot() {
   if (oldShareBtn) {
     oldShareBtn.addEventListener("click", copyShareText);
   }
+
+  applyTarotUrlParams();
 }
 
 document.addEventListener("DOMContentLoaded", initTarot);

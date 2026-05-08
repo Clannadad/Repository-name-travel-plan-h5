@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>BBTI 出行人格测试器｜向日葵工具箱</title>
+
+  <meta
+    name="description"
+    content="BBTI 是向日葵原创出行行为人格测评体系，通过 30 道随机旅行情景题，生成你的专属出行人格报告。"
+  />
+
+  <link rel="stylesheet" href="./assets/style.css" />
+  <link rel="stylesheet" href="./assets/bbti.css" />
+</head>
+
+<body>
+  <main class="bbti-page">
+    <!-- 顶部导航 -->
+    <header class="bbti-topbar">
+      <a class="bbti-back" href="./index.html">← 返回首页</a>
+
+      <div class="bbti-brand">
+        <span class="bbti-brand-icon">🧭</span>
+        <span>BBTI 出行人格测试器</span>
+      </div>
+    </header>
+
+    <!-- 主体容器 -->
+    <section class="bbti-shell">
+      <!-- 欢迎页 -->
+      <section class="bbti-step active" id="bbtiWelcome">
+        <div class="bbti-hero">
+          <p class="bbti-kicker">Behavior & Travel Behavior Index</p>
+
+          <h1>BBTI 出行人格测试器</h1>
+
+          <p class="bbti-desc">
+            基于向日葵原创出行行为人格体系，从「出行决策、出行社交、消费偏好、探索属性」四个维度，
+            通过随机旅行情景题，生成你的专属旅行人格报告。
+          </p>
+
+          <div class="bbti-hero-badges">
+            <span>原创 16 型人格</span>
+
+          </div>
+
+          <div class="bbti-notice">
+            <strong>说明：</strong>
+            BBTI 为向日葵原创旅行偏好测试，仅用于娱乐、分享和出行偏好参考，不属于心理诊断或专业人格评估。
+          </div>
+
+          <div class="bbti-action-row">
+            <button class="bbti-btn primary" id="startBbtiBtn" type="button">
+              开始测试
+            </button>
+
+            <button class="bbti-btn ghost" id="resumeBbtiBtn" type="button" hidden>
+              继续上次测试
+            </button>
+
+            <button class="bbti-btn ghost" id="viewLastResultBtn" type="button" hidden>
+              查看上次结果
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 说明页 -->
+      <section class="bbti-step" id="bbtiIntro">
+        <div class="bbti-panel">
+          <p class="bbti-kicker">Step 1 / 测试说明</p>
+
+          <h2>这次测试会如何进行？</h2>
+
+          <div class="bbti-info-grid">
+            <div class="bbti-info-card">
+              <strong>题库机制</strong>
+              <p>前端预制 200 道旅行情景题，每次随机抽取 30 道。</p>
+            </div>
+
+            <div class="bbti-info-card">
+              <strong>四维均衡</strong>
+              <p>从四个维度均衡抽题，避免某一类题目过少影响结果。</p>
+            </div>
+
+            <div class="bbti-info-card">
+              <strong>不同权重</strong>
+              <p>每道题根据行为强度配置不同权重，让结果更细腻。</p>
+            </div>
+
+            <div class="bbti-info-card">
+              <strong>本地计算</strong>
+              <p>所有答题与结果都在浏览器本地完成，不需要登录。</p>
+            </div>
+          </div>
+
+          <div class="bbti-dimension-box">
+            <h3>BBTI 四个原创维度</h3>
+
+            <div class="bbti-dimension-list">
+              <div>
+                <span>S / P</span>
+                <p>出行决策：随性 S vs 规划 P</p>
+              </div>
+
+              <div>
+                <span>G / D</span>
+                <p>出行社交：群居 G vs 独处 D</p>
+              </div>
+
+              <div>
+                <span>J / Y</span>
+                <p>消费偏好：精致 J vs 简约 Y</p>
+              </div>
+
+              <div>
+                <span>M / W</span>
+                <p>探索属性：冒险 M vs 安稳 W</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bbti-action-row">
+            <button class="bbti-btn ghost" id="backWelcomeBtn" type="button">
+              返回
+            </button>
+
+            <button class="bbti-btn primary" id="beginQuestionsBtn" type="button">
+              我知道了，开始答题
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 答题页 -->
+      <section class="bbti-step" id="bbtiQuiz">
+        <div class="bbti-panel quiz-panel">
+          <div class="bbti-quiz-head">
+            <div>
+              <p class="bbti-kicker">Step 2 / 情景选择</p>
+              <h2 id="questionTitle">旅行情景题</h2>
+            </div>
+
+            <div class="bbti-question-count" id="questionCount">
+              1 / 30
+            </div>
+          </div>
+
+          <div class="bbti-progress">
+            <div class="bbti-progress-bar">
+              <span id="quizProgressBar"></span>
+            </div>
+          </div>
+
+          <div class="bbti-question-card">
+            <p id="questionText">
+              题目加载中...
+            </p>
+          </div>
+
+          <div class="bbti-option-grid" id="optionGrid">
+            <!-- JS 渲染选项 -->
+          </div>
+
+          <div class="bbti-quiz-foot">
+            <button class="bbti-btn ghost" id="prevQuestionBtn" type="button">
+              上一题
+            </button>
+
+            <button class="bbti-btn ghost" id="saveAndExitBtn" type="button">
+              保存并退出
+            </button>
+
+            <button class="bbti-btn primary" id="nextQuestionBtn" type="button" disabled>
+              下一题
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 计算页 -->
+      <section class="bbti-step" id="bbtiCalculating">
+        <div class="bbti-panel center">
+          <p class="bbti-kicker">Step 3 / 正在生成报告</p>
+
+          <div class="bbti-orbit">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <h2>正在计算你的出行人格</h2>
+
+          <p class="bbti-muted">
+            系统正在分析你的四维偏好、人格明确度、旅行优势、踩雷点与推荐内容。
+          </p>
+        </div>
+      </section>
+
+      <!-- 结果页 -->
+      <section class="bbti-step" id="bbtiResult">
+        <div class="bbti-result-layout">
+          <!-- 结果头部 -->
+          <section class="bbti-result-hero" id="resultHero">
+            <p class="bbti-kicker">Your BBTI Travel Type</p>
+
+            <div class="bbti-result-code" id="resultCode">SGJM</div>
+
+            <h1 id="resultName">热烈探险家</h1>
+
+            <p id="resultFullName">随性 · 群居 · 精致 · 冒险型</p>
+
+            <div class="bbti-result-tags" id="resultTags">
+              <!-- JS 渲染标签 -->
+            </div>
+          </section>
+
+          <!-- 维度图表 -->
+          <section class="bbti-result-card">
+            <div class="bbti-card-head">
+              <h2>四维偏好占比</h2>
+              <span id="clarityText">人格明确度 --%</span>
+            </div>
+
+            <div class="bbti-axis-list" id="axisList">
+              <!-- JS 渲染四维条 -->
+            </div>
+          </section>
+
+          <!-- 长文解析 -->
+          <section class="bbti-result-card">
+            <div class="bbti-card-head">
+              <h2>人格长文解析</h2>
+              <span id="toneStyle">随机话术</span>
+            </div>
+
+            <div class="bbti-long-text" id="longAnalysis">
+              <!-- JS 渲染长文 -->
+            </div>
+          </section>
+
+          <!-- 分数动态解析 -->
+          <section class="bbti-result-card">
+            <div class="bbti-card-head">
+              <h2>你的差异化解读</h2>
+              <span>根据本次分数生成</span>
+            </div>
+
+            <div class="bbti-dynamic-analysis" id="dynamicAnalysis">
+              <!-- JS 渲染动态解析 -->
+            </div>
+          </section>
+
+          <!-- 推荐内容 -->
+          <section class="bbti-result-grid">
+            <div class="bbti-result-card">
+              <h2>适合你的目的地</h2>
+              <div class="bbti-chip-list" id="destinationList"></div>
+            </div>
+
+            <div class="bbti-result-card">
+              <h2>装备建议</h2>
+              <div class="bbti-chip-list" id="gearList"></div>
+            </div>
+
+            <div class="bbti-result-card">
+              <h2>穿搭建议</h2>
+              <div class="bbti-chip-list" id="outfitList"></div>
+            </div>
+
+            <div class="bbti-result-card">
+              <h2>朋友圈文案</h2>
+              <div class="bbti-moment-list" id="momentList"></div>
+            </div>
+          </section>
+
+          <!-- 联动跳转 -->
+          <section class="bbti-result-card">
+            <div class="bbti-card-head">
+              <h2>继续探索你的旅途</h2>
+              <span>联动向日葵工具箱</span>
+            </div>
+
+            <div class="bbti-link-grid">
+              <a class="bbti-link-card" id="goTarotLink" href="./tarot.html">
+                <span>🔮</span>
+                <div>
+                  <strong>去塔罗占卜近期旅途</strong>
+                  <p id="tarotQuestionPreview">根据你的 BBTI 生成推荐问题</p>
+                </div>
+              </a>
+
+              <a class="bbti-link-card" id="goOotdLink" href="./ootd.html">
+                <span>👗</span>
+                <div>
+                  <strong>去 OOTD 生成旅行穿搭</strong>
+                  <p id="ootdStylePreview">携带你的风格关键词</p>
+                </div>
+              </a>
+            </div>
+          </section>
+
+          <!-- 操作按钮 -->
+          <section class="bbti-result-actions">
+            <button class="bbti-btn ghost" id="restartTestBtn" type="button">
+              重新测试
+            </button>
+
+            <button class="bbti-btn ghost" id="copyResultBtn" type="button">
+              复制结果
+            </button>
+
+            <button class="bbti-btn primary" id="createPosterBtn" type="button">
+              生成人格海报
+            </button>
+          </section>
+        </div>
+      </section>
+    </section>
+
+    <footer class="bbti-footer">
+      <p>BBTI 出行人格测试器 · 向日葵工具箱</p>
+      <span>原创旅行偏好测试，仅供娱乐、自我观察与出行参考。</span>
+    </footer>
+  </main>
+
+  <div class="bbti-toast" id="bbtiToast"></div>
+
+  <script src="./js/bbti.js"></script>
+</body>
+
+</html>
